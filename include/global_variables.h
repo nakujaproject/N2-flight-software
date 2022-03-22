@@ -37,7 +37,7 @@ uint previous_altitude;
 uint current_altitude;
 
 /*
-* apogee detection variables
+* apogee variables
 */
 bool is_apogee = false;
 
