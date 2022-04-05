@@ -4,7 +4,7 @@
   "name": "NakujaN2",
   "content": "",
   "created_at": "2022-04-05 10:58:24",
-  "updated_at": "2022-04-05 15:30:26",
+  "updated_at": "2022-04-05 21:52:18",
   "stick": "",
   "documents": [
     {
@@ -268,7 +268,7 @@
         "4068d5e7e6a8485f9400f02e91ba18ce": 2,
         "d9f37312c8604f6a8234d50f9f92e014": 1,
         "24b92167f9cd42ceb7230a0c24a3cf3a": 1,
-        "83d59ac3551d4ce1857e08de9312a3f3": 1,
+        "83d59ac3551d4ce1857e08de9312a3f3": 2,
         "6cd4f59188894c7f9645ee03bb033b93": 2,
         "85b1b2e8ff4d4ed98bcfc829f4bcb31d": 2,
         "a7dad1787f0449f4a3489b479211ce27": 1,
@@ -379,9 +379,9 @@
         ],
         [
           "kf301_2",
-          1,
+          2,
           "KF301_2P",
-          "P2",
+          "P2,P3",
           {
             "BOM_Supplier": "",
             "BOM_Manufacturer": "BOOMELE",
@@ -503,11 +503,11 @@
           }
         ]
       ],
-      "updateTime": 1649158712,
+      "updateTime": 1649184729,
       "createTime": 1649147027,
       "histories": [],
       "created_at": "2022-04-05 11:23:47",
-      "updated_at": "2022-04-05 14:38:32"
+      "updated_at": "2022-04-05 21:52:09"
     },
     {
       "uuid": "ec2e11443259d78f20c5e8495d886387",
@@ -519,10 +519,11 @@
       "master": "",
       "thumb": "/images/thumb-default.png",
       "components": {
-        "0a54a539de8c4950827a56fa2ac4604e": 1,
-        "6a632a46aa604d7fb735ac2f6bba0007": 1,
         "393bfbbfe76441c6805afc6d06285995": 1,
         "64802ac5daf9444d816ed58c8311ec0f": 1,
+        "0a54a539de8c4950827a56fa2ac4604e": 1,
+        "6a632a46aa604d7fb735ac2f6bba0007": 1,
+        "3a46618b11b548c8bc85e72f1491cf7a": 2,
         "1c0e87c1c33746f0946797a55a4dded2": 1,
         "38cab6a2b6154121898e1df14bead100": 2,
         "d9933b75b3a949a5991cef2b65f4b5bc": 1,
@@ -531,16 +532,15 @@
         "87e0df2cdc0a488b86155df4861d23bf": 2,
         "4689ceaed4544f5e83ae622ca35a16fb": 2,
         "369fccd7e04e4695bc6cb780e5bddcdf": 1,
-        "3a46618b11b548c8bc85e72f1491cf7a": 1,
         "86c80e8928ff46fb9ee7744e2313a118": 1,
         "a1d56870a5c74a15982caa49b487fbb0": 2
       },
       "BOM": [],
-      "updateTime": 1649161826,
+      "updateTime": 1649184738,
       "createTime": 1649151937,
       "histories": [],
       "created_at": "2022-04-05 12:45:37",
-      "updated_at": "2022-04-05 15:30:26"
+      "updated_at": "2022-04-05 21:52:18"
     }
   ],
   "sort": [
@@ -550,5 +550,5 @@
   "title": "NakujaN2",
   "foldername": "NakujaN2",
   "schfilename": "NakujaN2.json",
-  "schfilemtime": 1649158712650
+  "schfilemtime": 1649184729331
 }
