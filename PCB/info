@@ -1,0 +1,554 @@
+{
+  "uuid": "11c8331f9cf8b0f50d9f87e787e5a016",
+  "path": "Offline/NakujaN2",
+  "name": "NakujaN2",
+  "content": "",
+  "created_at": "2022-04-05 10:58:24",
+  "updated_at": "2022-04-05 15:30:26",
+  "stick": "",
+  "documents": [
+    {
+      "uuid": "9fe67a4b6305d5812934808555c973ab",
+      "title": "ESP",
+      "description": "",
+      "docType": "1",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "de83fafe862d42eeb264a301e4738add": 1,
+        "abb94b642b084d14b999208e41911d4b": 1,
+        "0344dbc764924f8082dfd0e5c83fefb6": 1,
+        "dc6faadd3ddb46808ff4d75253dd4f2f": 3,
+        "fff8190b293a4a16828e9529d592c87d": 1
+      },
+      "BOM": [
+        [
+          "Value",
+          "Quantity",
+          "Package",
+          "Components",
+          "CustomPara"
+        ],
+        [
+          "XT60 Female",
+          1,
+          "XT60-F",
+          "P1",
+          {
+            "BOM_Manufacturer": "Changzhou Amass Elec",
+            "BOM_Manufacturer Part": "XT60-F",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "369fccd7e04e4695bc6cb780e5bddcdf",
+            "uuid": "abb94b642b084d14b999208e41911d4b"
+          }
+        ],
+        [
+          "TOGGLE SWITCH 12V 20A",
+          1,
+          "TOGGLE SWITCH 12V 20A",
+          "U1",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "38cab6a2b6154121898e1df14bead100",
+            "uuid": "fff8190b293a4a16828e9529d592c87d"
+          }
+        ],
+        [
+          "XT60 COPY",
+          1,
+          "XT60",
+          "U2",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "d9933b75b3a949a5991cef2b65f4b5bc",
+            "uuid": "0344dbc764924f8082dfd0e5c83fefb6"
+          }
+        ],
+        [
+          "2 Pins",
+          3,
+          "2 PINS HEADER",
+          "U3,U5,U6",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "8ca24dc1af9647cb96283f8ca6de040b",
+            "uuid": "dc6faadd3ddb46808ff4d75253dd4f2f"
+          }
+        ],
+        [
+          "ESP32SNODEMCU",
+          1,
+          "NODEMCU-ESP32S",
+          "U4",
+          {
+            "BOM_Manufacturer Part": "Nodemcu esp32",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "1faebd51e44c4e09b305ca0e1b7f16fe",
+            "uuid": "de83fafe862d42eeb264a301e4738add"
+          }
+        ],
+        [
+          "GPS_MODULE_NEO-6M_pro",
+          1,
+          "GPS_MODULE",
+          "GPS_NEO-1EM",
+          {
+            "BOM_Manufacturer Part": "",
+            "puuid": "393bfbbfe76441c6805afc6d06285995",
+            "uuid": "7d456c13392b4d7d8b110f0c077c80c1"
+          }
+        ],
+        [
+          "Logic-Level-Converter-4CH",
+          1,
+          "LOGIC-LEVEL-CONVERTER-4CH",
+          "LLC1",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "50807",
+            "BOM_Supplier": "Космодром",
+            "puuid": "64802ac5daf9444d816ed58c8311ec0f",
+            "uuid": "d9f37312c8604f6a8234d50f9f92e014"
+          }
+        ],
+        [
+          "kf301_2",
+          1,
+          "KF301_2P",
+          "P2",
+          {
+            "BOM_Supplier": "",
+            "BOM_Manufacturer": "BOOMELE",
+            "BOM_Manufacturer Part": "kf301_2",
+            "BOM_Supplier Part": "C33435",
+            "puuid": "3a46618b11b548c8bc85e72f1491cf7a",
+            "uuid": "83d59ac3551d4ce1857e08de9312a3f3"
+          }
+        ],
+        [
+          "Mosfet-N",
+          1,
+          "DC-MOSFET-TO-220",
+          "Q1",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "86c80e8928ff46fb9ee7744e2313a118",
+            "uuid": "24b92167f9cd42ceb7230a0c24a3cf3a"
+          }
+        ],
+        [
+          "1k",
+          2,
+          "R_AXIAL-0.6",
+          "R1,R2",
+          {
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "BOM_Manufacturer Part": "",
+            "puuid": "a1d56870a5c74a15982caa49b487fbb0",
+            "uuid": "6cd4f59188894c7f9645ee03bb033b93"
+          }
+        ],
+        [
+          "Pins_header1*3",
+          2,
+          "PINS_HEADER1*3",
+          "U7,U14",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "87e0df2cdc0a488b86155df4861d23bf",
+            "uuid": "4068d5e7e6a8485f9400f02e91ba18ce"
+          }
+        ],
+        [
+          "pinheader 2.54 - 8 pins",
+          2,
+          "PINHEADER 2.54 - 8 PINS",
+          "U8,U9",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "4689ceaed4544f5e83ae622ca35a16fb",
+            "uuid": "85b1b2e8ff4d4ed98bcfc829f4bcb31d"
+          }
+        ],
+        [
+          "MPU6050",
+          1,
+          "MPU6050",
+          "U10",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier": "",
+            "BOM_Supplier Part": "GY521",
+            "puuid": "0a54a539de8c4950827a56fa2ac4604e",
+            "uuid": "bb0dfa1c11dc40b5b00b2e787034e251"
+          }
+        ],
+        [
+          "MICRO SD CARD",
+          1,
+          "MICRO SD CARD",
+          "U11",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "RS-Online",
+            "puuid": "6a632a46aa604d7fb735ac2f6bba0007",
+            "uuid": "a7dad1787f0449f4a3489b479211ce27"
+          }
+        ],
+        [
+          "TOGGLE SWITCH 12V 20A",
+          1,
+          "TOGGLE SWITCH 12V 20A",
+          "U12",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "38cab6a2b6154121898e1df14bead100",
+            "uuid": "fff8190b293a4a16828e9529d592c87d"
+          }
+        ],
+        [
+          "BMP180 MODULE",
+          1,
+          "BMP180 MODULE (HW-596)",
+          "U13",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "BMP180 (HW-596)",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "1c0e87c1c33746f0946797a55a4dded2",
+            "uuid": "178e0eaa93be4db98a0ca80963a021e1"
+          }
+        ]
+      ],
+      "updateTime": 1649158418,
+      "createTime": 1649145506,
+      "histories": [],
+      "created_at": "2022-04-05 10:58:26",
+      "updated_at": "2022-04-05 14:33:38"
+    },
+    {
+      "uuid": "0205e3a0acd025cad0a22222c1139415",
+      "title": "SENSORS",
+      "description": "",
+      "docType": "1",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "bb0dfa1c11dc40b5b00b2e787034e251": 1,
+        "7d456c13392b4d7d8b110f0c077c80c1": 1,
+        "4068d5e7e6a8485f9400f02e91ba18ce": 2,
+        "d9f37312c8604f6a8234d50f9f92e014": 1,
+        "24b92167f9cd42ceb7230a0c24a3cf3a": 1,
+        "83d59ac3551d4ce1857e08de9312a3f3": 1,
+        "6cd4f59188894c7f9645ee03bb033b93": 2,
+        "85b1b2e8ff4d4ed98bcfc829f4bcb31d": 2,
+        "a7dad1787f0449f4a3489b479211ce27": 1,
+        "fff8190b293a4a16828e9529d592c87d": 1,
+        "178e0eaa93be4db98a0ca80963a021e1": 1
+      },
+      "BOM": [
+        [
+          "Value",
+          "Quantity",
+          "Package",
+          "Components",
+          "CustomPara"
+        ],
+        [
+          "XT60 Female",
+          1,
+          "XT60-F",
+          "P1",
+          {
+            "BOM_Manufacturer": "Changzhou Amass Elec",
+            "BOM_Manufacturer Part": "XT60-F",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "369fccd7e04e4695bc6cb780e5bddcdf",
+            "uuid": "abb94b642b084d14b999208e41911d4b"
+          }
+        ],
+        [
+          "TOGGLE SWITCH 12V 20A",
+          1,
+          "TOGGLE SWITCH 12V 20A",
+          "U1",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "38cab6a2b6154121898e1df14bead100",
+            "uuid": "fff8190b293a4a16828e9529d592c87d"
+          }
+        ],
+        [
+          "XT60 COPY",
+          1,
+          "XT60",
+          "U2",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "d9933b75b3a949a5991cef2b65f4b5bc",
+            "uuid": "0344dbc764924f8082dfd0e5c83fefb6"
+          }
+        ],
+        [
+          "2 Pins",
+          3,
+          "2 PINS HEADER",
+          "U3,U5,U6",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "8ca24dc1af9647cb96283f8ca6de040b",
+            "uuid": "dc6faadd3ddb46808ff4d75253dd4f2f"
+          }
+        ],
+        [
+          "ESP32SNODEMCU",
+          1,
+          "NODEMCU-ESP32S",
+          "U4",
+          {
+            "BOM_Manufacturer Part": "Nodemcu esp32",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "1faebd51e44c4e09b305ca0e1b7f16fe",
+            "uuid": "de83fafe862d42eeb264a301e4738add"
+          }
+        ],
+        [
+          "GPS_MODULE_NEO-6M_pro",
+          1,
+          "GPS_MODULE",
+          "GPS_NEO-1EM",
+          {
+            "BOM_Manufacturer Part": "",
+            "puuid": "393bfbbfe76441c6805afc6d06285995",
+            "uuid": "7d456c13392b4d7d8b110f0c077c80c1"
+          }
+        ],
+        [
+          "Logic-Level-Converter-4CH",
+          1,
+          "LOGIC-LEVEL-CONVERTER-4CH",
+          "LLC1",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "50807",
+            "BOM_Supplier": "Космодром",
+            "puuid": "64802ac5daf9444d816ed58c8311ec0f",
+            "uuid": "d9f37312c8604f6a8234d50f9f92e014"
+          }
+        ],
+        [
+          "kf301_2",
+          1,
+          "KF301_2P",
+          "P2",
+          {
+            "BOM_Supplier": "",
+            "BOM_Manufacturer": "BOOMELE",
+            "BOM_Manufacturer Part": "kf301_2",
+            "BOM_Supplier Part": "C33435",
+            "puuid": "3a46618b11b548c8bc85e72f1491cf7a",
+            "uuid": "83d59ac3551d4ce1857e08de9312a3f3"
+          }
+        ],
+        [
+          "Mosfet-N",
+          1,
+          "DC-MOSFET-TO-220",
+          "Q1",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "86c80e8928ff46fb9ee7744e2313a118",
+            "uuid": "24b92167f9cd42ceb7230a0c24a3cf3a"
+          }
+        ],
+        [
+          "1k",
+          2,
+          "R_AXIAL-0.6",
+          "R1,R2",
+          {
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "BOM_Manufacturer Part": "",
+            "puuid": "a1d56870a5c74a15982caa49b487fbb0",
+            "uuid": "6cd4f59188894c7f9645ee03bb033b93"
+          }
+        ],
+        [
+          "Pins_header1*3",
+          2,
+          "PINS_HEADER1*3",
+          "U7,U14",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "87e0df2cdc0a488b86155df4861d23bf",
+            "uuid": "4068d5e7e6a8485f9400f02e91ba18ce"
+          }
+        ],
+        [
+          "pinheader 2.54 - 8 pins",
+          2,
+          "PINHEADER 2.54 - 8 PINS",
+          "U8,U9",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "4689ceaed4544f5e83ae622ca35a16fb",
+            "uuid": "85b1b2e8ff4d4ed98bcfc829f4bcb31d"
+          }
+        ],
+        [
+          "MPU6050",
+          1,
+          "MPU6050",
+          "U10",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier": "",
+            "BOM_Supplier Part": "GY521",
+            "puuid": "0a54a539de8c4950827a56fa2ac4604e",
+            "uuid": "bb0dfa1c11dc40b5b00b2e787034e251"
+          }
+        ],
+        [
+          "MICRO SD CARD",
+          1,
+          "MICRO SD CARD",
+          "U11",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "RS-Online",
+            "puuid": "6a632a46aa604d7fb735ac2f6bba0007",
+            "uuid": "a7dad1787f0449f4a3489b479211ce27"
+          }
+        ],
+        [
+          "TOGGLE SWITCH 12V 20A",
+          1,
+          "TOGGLE SWITCH 12V 20A",
+          "U12",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "38cab6a2b6154121898e1df14bead100",
+            "uuid": "fff8190b293a4a16828e9529d592c87d"
+          }
+        ],
+        [
+          "BMP180 MODULE",
+          1,
+          "BMP180 MODULE (HW-596)",
+          "U13",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "BMP180 (HW-596)",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "1c0e87c1c33746f0946797a55a4dded2",
+            "uuid": "178e0eaa93be4db98a0ca80963a021e1"
+          }
+        ]
+      ],
+      "updateTime": 1649158712,
+      "createTime": 1649147027,
+      "histories": [],
+      "created_at": "2022-04-05 11:23:47",
+      "updated_at": "2022-04-05 14:38:32"
+    },
+    {
+      "uuid": "ec2e11443259d78f20c5e8495d886387",
+      "puuid": "11c8331f9cf8b0f50d9f87e787e5a016",
+      "title": "PCB_NakujaN2",
+      "filename": "PCB_NakujaN2.json",
+      "description": "",
+      "docType": "3",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "0a54a539de8c4950827a56fa2ac4604e": 1,
+        "6a632a46aa604d7fb735ac2f6bba0007": 1,
+        "393bfbbfe76441c6805afc6d06285995": 1,
+        "64802ac5daf9444d816ed58c8311ec0f": 1,
+        "1c0e87c1c33746f0946797a55a4dded2": 1,
+        "38cab6a2b6154121898e1df14bead100": 2,
+        "d9933b75b3a949a5991cef2b65f4b5bc": 1,
+        "8ca24dc1af9647cb96283f8ca6de040b": 3,
+        "1faebd51e44c4e09b305ca0e1b7f16fe": 1,
+        "87e0df2cdc0a488b86155df4861d23bf": 2,
+        "4689ceaed4544f5e83ae622ca35a16fb": 2,
+        "369fccd7e04e4695bc6cb780e5bddcdf": 1,
+        "3a46618b11b548c8bc85e72f1491cf7a": 1,
+        "86c80e8928ff46fb9ee7744e2313a118": 1,
+        "a1d56870a5c74a15982caa49b487fbb0": 2
+      },
+      "BOM": [],
+      "updateTime": 1649161826,
+      "createTime": 1649151937,
+      "histories": [],
+      "created_at": "2022-04-05 12:45:37",
+      "updated_at": "2022-04-05 15:30:26"
+    }
+  ],
+  "sort": [
+    "9fe67a4b6305d5812934808555c973ab",
+    "0205e3a0acd025cad0a22222c1139415"
+  ],
+  "title": "NakujaN2",
+  "foldername": "NakujaN2",
+  "schfilename": "NakujaN2.json",
+  "schfilemtime": 1649158712650
+}
