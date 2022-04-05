@@ -51,7 +51,6 @@ void initializeComponents(){
    */
 
   Serial.begin(BAUD_RATE);
-
  
   // Initialize BMP pressure sensor
   Serial.println("Barometer Check...");
@@ -117,6 +116,29 @@ String getSensorReadings(){
   return data_message;
 }
 
+void kalmanUpdate(){
+      //Measurement matrix
+    BLA::Matrix<2, 1> Z = {altitude,
+                           ay};
+    //Predicted state estimate
+    BLA::Matrix<3, 1> x_hat_minus = A * x_hat;
+    //Predicted estimate covariance
+    BLA::Matrix<3, 3> P_minus = A * P * (~A) + Q;
+    //Kalman gain
+    BLA::Matrix<3, 2> K = P_minus * (~H) * ((H * P_minus * (~H) + R)).Inverse();
+    //Measurement residual
+    Y = Z - (H * x_hat_minus);
+    //Updated state estimate
+    x_hat = x_hat_minus + K * Y;
+    //Updated estimate covariance
+    P = (I - K * H) * P_minus;
+    Y = Z - (H * x_hat_minus);
+
+    s = x_hat(0);
+    v = x_hat(1);
+    a = x_hat(2);
+}
+
 void printToSerial(){
   //Data = String(altitude) + "," + String(ax) + "," + String(ay) + "," + String(az);
   Serial.print("Altitude:"); Serial.print(altitude); Serial.println();
@@ -163,7 +185,6 @@ void logToSD(String data){
 
 }
 
-
 void appendToFile(fs::FS &fs, const char* path, const char* data){
   // the file to write to must first be created in the SD card using a PC
   Serial.printf("Appending to file: %s\n", path);
@@ -175,7 +196,7 @@ void appendToFile(fs::FS &fs, const char* path, const char* data){
   } else if(file.print(data)){
     Serial.println("Message appended"); // todo: log
   }else{
-    Serial.println("Failed writeing to file");  // todo: log
+    Serial.println("Failed writing to file");  // todo: log
   }
 }
 
@@ -188,15 +209,16 @@ void detectLiftoff(){
   current_altitude = barometer.readAltitude(SEA_LEVEL_PRESSURE_HPA * 100);
 
   if(is_lift_off == false){
-     if((current_altitude - CURRENT_ALTITUDE) > LIFT_OFF_DEVIATION){   
-        Serial.println("(0) Waiting for lift-off...");
+    Serial.println("0: Waiting for lift-off..."); // todo: transmit to ground
+    if((current_altitude - CURRENT_ALTITUDE) > LIFT_OFF_DEVIATION){   
+      
 
-        Serial.println(current_altitude);
+      Serial.println(current_altitude);
 
-        // lift off detected
-        Serial.print("Lift Off!"); // log this to some file
-        is_lift_off = true;
-    }
+      // lift off detected
+      Serial.print("Lift Off!"); // log this to some file
+      is_lift_off = true;
+  }
   }
 }
 
@@ -225,8 +247,7 @@ void detectApogee(){
       // rocket still in ascent
       // apogee not reached yet
       Serial.println("Waiting for apogee...");
-      // todo: check apogee here
-
+      // todo: transmit this state to ground station
     }    
   }
 }

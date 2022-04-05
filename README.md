@@ -21,7 +21,6 @@ code successfully.
 ├───src
    └───main.cpp
 └───test
-
 ```
 
 ### 1. Folders Description
@@ -55,5 +54,6 @@ The flight program is structured as a state machine with the following states:
 | 5  | main parachute deployed| Not used  |
 | 6  | Post-main (waiting to land) |  Zero velocity |
 | 7  | Ground(Flight is over)    |  No more events  |
+
 
 

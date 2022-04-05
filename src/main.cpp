@@ -31,9 +31,9 @@ void Task1Code(void* pvParameters){
 
 void Task2Code(void* pvParameters){
   for(;;){
-    // kalmanUpdate();
-    // detectLiftoff();
-    // detectApogee();
+    kalmanUpdate();
+    detectLiftoff();
+    detectApogee();
   }
 }
 
