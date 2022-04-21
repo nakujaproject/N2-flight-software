@@ -1,0 +1,103 @@
+{
+  "uuid": "29ea55ffde1a23e806634603a01c10df",
+  "path": "Offline/Nakuja%20Remix%202",
+  "name": "Nakuja Remix 2",
+  "content": "",
+  "created_at": "2022-04-21 11:54:32",
+  "updated_at": "2022-04-21 13:35:47",
+  "stick": "",
+  "documents": [
+    {
+      "uuid": "d65d28167d2ce889c7d5972dbace87af",
+      "title": "Sheet_1",
+      "description": "",
+      "docType": "1",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "7d456c13392b4d7d8b110f0c077c80c1": 1,
+        "a7dad1787f0449f4a3489b479211ce27": 1,
+        "85b1b2e8ff4d4ed98bcfc829f4bcb31d": 5
+      },
+      "BOM": [
+        [
+          "Value",
+          "Quantity",
+          "Package",
+          "Components",
+          "CustomPara"
+        ],
+        [
+          "GPS_MODULE_NEO-6M_pro",
+          1,
+          "GPS_MODULE",
+          "GPS_NEO-1EM",
+          {
+            "BOM_Manufacturer Part": "",
+            "puuid": "393bfbbfe76441c6805afc6d06285995",
+            "uuid": "7d456c13392b4d7d8b110f0c077c80c1"
+          }
+        ],
+        [
+          "pinheader 2.54 - 8 pins",
+          5,
+          "PINHEADER 2.54 - 8 PINS",
+          "U1,U2,U3,U8,U9",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "4689ceaed4544f5e83ae622ca35a16fb",
+            "uuid": "85b1b2e8ff4d4ed98bcfc829f4bcb31d"
+          }
+        ],
+        [
+          "MICRO SD CARD",
+          1,
+          "MICRO SD CARD",
+          "U11",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "RS-Online",
+            "puuid": "6a632a46aa604d7fb735ac2f6bba0007",
+            "uuid": "a7dad1787f0449f4a3489b479211ce27"
+          }
+        ]
+      ],
+      "updateTime": 1650532265,
+      "createTime": 1650531273,
+      "histories": [],
+      "created_at": "2022-04-21 11:54:33",
+      "updated_at": "2022-04-21 12:11:05"
+    },
+    {
+      "uuid": "8dd296b45856fa23a52ad10ce1224939",
+      "puuid": "29ea55ffde1a23e806634603a01c10df",
+      "title": "PCB_Nakuja Remix 2",
+      "filename": "PCB_Nakuja Remix 2.json",
+      "description": "",
+      "docType": "3",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "393bfbbfe76441c6805afc6d06285995": 1,
+        "4689ceaed4544f5e83ae622ca35a16fb": 5,
+        "6a632a46aa604d7fb735ac2f6bba0007": 1
+      },
+      "BOM": [],
+      "updateTime": 1650537347,
+      "createTime": 1650532270,
+      "histories": [],
+      "created_at": "2022-04-21 12:11:10",
+      "updated_at": "2022-04-21 13:35:47"
+    }
+  ],
+  "sort": [],
+  "title": "Nakuja Remix 2",
+  "foldername": "Nakuja Remix 2",
+  "schfilename": "Nakuja Remix 2.json",
+  "schfilemtime": 1650532265253
+}
