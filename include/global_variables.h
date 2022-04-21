@@ -7,8 +7,11 @@
 /*
 * =================== POSITION VARIABLES ====================
 */
-float altitude, velocity, acceleration, ax, ay, az, kalmanAltitude;
+float altitude, velocity, acceleration, kalmanAltitude;
 float s, v, a;
+
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
 
   
 /*

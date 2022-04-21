@@ -2,7 +2,6 @@
 #define FUNCTIONS_H
 
 #include <Adafruit_BMP085.h>
-#include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <BasicLinearAlgebra.h>
 #include <WiFi.h>
@@ -18,8 +17,18 @@
 #include "global_variables.h" // header file containing variables
 #include "defs.h" // header file containing constants
 
+#define SD_CS 5
+
+#include "I2Cdev.h"
+
+#include "MPU6050_6Axis_MotionApps20.h"
+
+#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
+    #include "Wire.h"
+#endif
+
 Adafruit_BMP085 barometer; 
-Adafruit_MPU6050 accelerometer;
+MPU6050 mpu;
 WiFiUDP Udp;
 
 using namespace BLA;
@@ -39,6 +48,41 @@ void createAcessPoint();
 void serveData(int counter, float altitude, float ax, float ay, float az, float gx, float gy, float gz, float s, float v, float a, int currentState, float longitude, float latitude);
 String request_server_data(const char* server_name);
 
+
+
+int16_t accData[3], gyrData[3];
+
+#define OUTPUT_READABLE_YAWPITCHROLL
+
+#define INTERRUPT_PIN 2 
+
+#define SDA 21
+#define SCL 22
+
+// MPU control/status vars
+bool dmpReady = false;  // set true if DMP init was successful
+uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
+uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
+uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
+uint16_t fifoCount;     // count of all bytes currently in  
+uint8_t fifoBuffer[64]; // FIFO storage buffer
+
+// orientation/motion vars
+Quaternion q;           // [w, x, y, z]         quaternion container
+VectorInt16 aa;         // [x, y, z]            accel sensor measurements
+VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
+VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measurements
+VectorFloat gravity;    // [x, y, z]            gravity vector
+float euler[3];         // [psi, theta, phi]    Euler angle container
+float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+
+// packet structure for InvenSense teapot demo
+uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\n' };
+
+volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
+void dmpDataReady() {
+    mpuInterrupt = true;
+}
 
 /*
  * ==================== FUNCTION DEFINITIONS ====================
@@ -63,16 +107,57 @@ void initializeComponents(){
   Serial.println("Barometer OK..."); // todo : log
 
   // Initialize MPU6050 accelerometer
-  Serial.println("Accelerometer Check...");
-  if(!accelerometer.begin()){
-    Serial.println("Accelerometer not found...");
-    while (1) {
-      delay(SHORT_DELAY);
-    }
-  }
-  
-  Serial.println("Accelerometer OK...");
+  #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
+        Wire.begin(SDA, SCL, 400000);
+        //Wire.setClock(400000); // 400kHz I2C clock. Comment this line if having compilation difficulties
+    #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
+        Fastwire::setup(400, true);
+    #endif
+    mpu.initialize();
+    pinMode(INTERRUPT_PIN, INPUT_PULLUP); 
 
+    // load and configure the DMP
+    devStatus = mpu.dmpInitialize();
+
+    // supply your own gyro offsets here, scaled for min sensitivity
+    mpu.setXGyroOffset(220);
+    mpu.setYGyroOffset(76);
+    mpu.setZGyroOffset(-85);
+    mpu.setZAccelOffset(1788);
+
+    // make sure it worked (returns 0 if so)
+    if (devStatus == 0) {
+        // Calibration Time: generate offsets and calibrate our MPU6050
+        mpu.CalibrateAccel(6);
+        mpu.CalibrateGyro(6);
+        mpu.PrintActiveOffsets();
+        // turn on the DMP, now that it's ready
+        //Serial.println(F("Enabling DMP..."));
+        mpu.setDMPEnabled(true);
+
+        // enable Arduino interrupt detection
+        //Serial.print(F("Enabling interrupt detection (Arduino external interrupt "));
+        //Serial.print(digitalPinToInterrupt(INTERRUPT_PIN));
+        //.println(F(")..."));
+        attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), dmpDataReady, RISING);
+        mpuIntStatus = mpu.getIntStatus();
+
+        // set our DMP Ready flag so the main loop() function knows it's okay to use it
+        //Serial.println(F("DMP ready! Waiting for first interrupt..."));
+        dmpReady = true;
+
+        // get expected DMP packet size for later comparison
+        packetSize = mpu.dmpGetFIFOPacketSize();
+    } else {
+        // ERROR!
+        // 1 = initial memory load failed
+        // 2 = DMP configuration updates failed
+        // (if it's going to break, usually the code will be 1)
+        //Serial.print(F("DMP Initialization failed (code "));
+        //Serial.print(devStatus);
+        //Serial.println(F(")"));
+    }
+  
   // Initialize SD card
   Serial.println("SD card Check...");
   if(!SD.begin()){
@@ -93,23 +178,13 @@ void initializeComponents(){
 }
  
 String getSensorReadings(){
-  sensors_event_t a, g, temp;
-  accelerometer.getEvent(&a, &g, &temp);
+  mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
 
   // read altitude
   altitude = barometer.readAltitude(SEA_LEVEL_PRESSURE_HPA * 100);
 
   // convert altitude to unsigned integer
   // altitude = (int)altitude;
-
-  // read x axis acceleration
-  ax = a.acceleration.x;
-
-  // read y axis acceleration
-  ay = a.acceleration.y;
-
-  // read z axis acceleration
-  az = a.acceleration.z;
 
   // append data to sata_message
   data_message = String("Altitude: ") + String(altitude) + ", " + String("Acc-x: ") + String(ax) + ", " + String("Acc-y: ") + String(ay) + ", " + String("Acc-z: ") + String(az) + "\n";
