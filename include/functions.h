@@ -13,6 +13,7 @@
 #include <FS.h>
 #include <SD.h>
 #include <SPI.h>
+#include <ESP32Servo.h>
 
 #include "global_variables.h" // header file containing variables
 #include "defs.h" // header file containing constants
@@ -82,6 +83,28 @@ uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\
 volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
 void dmpDataReady() {
     mpuInterrupt = true;
+}
+
+//ESC
+Servo ESC;
+
+//initialize ESC
+void calibrateESC () {
+   //Serial.println("Calibration procedure for Mamba ESC.");
+  //Serial.println("Turn on ESC.");
+  ESC.writeMicroseconds(0);
+  //Serial.println("Starting Calibration.");
+  delay(1000);
+  ESC.writeMicroseconds(1832);
+  //Serial.println("Writing Full Throttle.");
+  delay(1000);
+  ESC.writeMicroseconds(1312);
+  //Serial.println("Writing Full Reverse.");
+  delay(1000);
+  ESC.writeMicroseconds(1488);
+ // Serial.println("Writing Neutral.");
+  delay(1000);
+  //Serial.println("Calibration Complete.");
 }
 
 /*
@@ -174,6 +197,10 @@ void initializeComponents(){
   
   // SD card exists
   Serial.println("SD card OK...");
+
+  
+  ESC.attach(14);
+  calibrateESC();
   
 }
  
