@@ -13,6 +13,13 @@ float s, v, a;
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
 
+double Input;
+static double Output;
+double Setpoint = 0;
+float Kp = 2.0;
+float Ki = 0.0;
+float Kd = 1.0;
+
   
 /*
 * Wi-Fi connection variables

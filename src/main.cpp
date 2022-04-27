@@ -4,6 +4,7 @@
  * Check brownout issues to prevent ESP32 from re-booting unexpectedly
  */
 #include "../include/functions.h"
+#include <reaction-wheel.h>
 
 /*
  * ==================== CORE TASKS SEPARATION ====================
@@ -54,6 +55,7 @@ void setup() {
   // initialize core tasks
   xTaskCreatePinnedToCore(Task1Code, "Task1", 10000, NULL, 1, &Task1, 0);
   xTaskCreatePinnedToCore(Task2Code, "Task2", 10000, NULL, 1, &Task2, 1);
+  xTaskCreate(TaskRollControl, "Task3", 10000, NULL, 1, &TaskRollControl_Handler);
 
 }
 

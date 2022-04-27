@@ -24,6 +24,8 @@
 
 #include "MPU6050_6Axis_MotionApps20.h"
 
+#include "PID_v1.h"
+
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
     #include "Wire.h"
 #endif
@@ -31,6 +33,9 @@
 Adafruit_BMP085 barometer; 
 MPU6050 mpu;
 WiFiUDP Udp;
+PID balancePID(&Input,&Output,&Setpoint,Kp,Ki,Kd,DIRECT);
+//ESC
+Servo ESC;
 
 using namespace BLA;
 /* 
@@ -48,6 +53,7 @@ void deployParachute();
 void createAcessPoint();
 void serveData(int counter, float altitude, float ax, float ay, float az, float gx, float gy, float gz, float s, float v, float a, int currentState, float longitude, float latitude);
 String request_server_data(const char* server_name);
+void calibrateESC ();
 
 
 
@@ -84,9 +90,6 @@ volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin h
 void dmpDataReady() {
     mpuInterrupt = true;
 }
-
-//ESC
-Servo ESC;
 
 //initialize ESC
 void calibrateESC () {
@@ -200,6 +203,8 @@ void initializeComponents(){
 
   
   ESC.attach(14);
+  balancePID.SetMode(AUTOMATIC); //
+  balancePID.SetOutputLimits(-176,344);//to range from 1312 to 1832( -176,344
   calibrateESC();
   
 }
