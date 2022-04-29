@@ -1,15 +1,15 @@
 {
   "uuid": "f4a56346475e53aa10b36bbc5c7542f0",
-  "path": "Offline/NAKUJA%20REMIX",
-  "name": "NAKUJA REMIX",
+  "path": "Offline/NAKUJA%20bmp_mpu_logic",
+  "name": "NAKUJA bmp_mpu_logic",
   "content": "NEW BOARD DECOUPLED",
   "created_at": "2022-04-21 10:51:55",
-  "updated_at": "2022-04-21 13:33:28",
+  "updated_at": "2022-04-29 21:54:10",
   "stick": "",
   "documents": [
     {
       "uuid": "c5e274704e7ffa1ba20ba9b0b29aac94",
-      "title": "ESP BMP MPU",
+      "title": "bmp_mpu_logic",
       "description": "",
       "docType": "1",
       "master": "",
@@ -94,8 +94,8 @@
     {
       "uuid": "6ce80c314da467f458d20fe99f8ea8c8",
       "puuid": "f4a56346475e53aa10b36bbc5c7542f0",
-      "title": "PCB_NAKUJA REMIX",
-      "filename": "PCB_NAKUJA REMIX.json",
+      "title": "PCB_bmp_mpu_logic",
+      "filename": "PCB_bmp_mpu_logic.json",
       "description": "",
       "docType": "3",
       "master": "",
@@ -107,19 +107,19 @@
         "1c0e87c1c33746f0946797a55a4dded2": 1
       },
       "BOM": [],
-      "updateTime": 1650537208,
+      "updateTime": 1651257048,
       "createTime": 1650530737,
       "histories": [],
       "created_at": "2022-04-21 11:45:37",
-      "updated_at": "2022-04-21 13:33:28"
+      "updated_at": "2022-04-29 21:30:48"
     }
   ],
   "sort": [
     "c5e274704e7ffa1ba20ba9b0b29aac94",
     "5d9d9629e70f16ed18eac3134616d802"
   ],
-  "title": "NAKUJA REMIX",
-  "foldername": "NAKUJA REMIX",
-  "schfilename": "NAKUJA REMIX.json",
-  "schfilemtime": 1650537189265
+  "title": "NAKUJA bmp_mpu_logic",
+  "foldername": "NAKUJA bmp_mpu_logic",
+  "schfilename": "NAKUJA bmp_mpu_logic.json",
+  "schfilemtime": 1651258430673
 }

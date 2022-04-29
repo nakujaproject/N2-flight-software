@@ -1,0 +1,120 @@
+{
+  "uuid": "ea4c2969e2589b6f19c9c203ecfc3924",
+  "path": "Offline/Nakuja%20esp_lora_gps_sd",
+  "name": "Nakuja esp_lora_gps_sd",
+  "content": "",
+  "created_at": "2022-04-21 13:19:16",
+  "updated_at": "2022-04-29 21:54:47",
+  "stick": "",
+  "documents": [
+    {
+      "uuid": "c820d929a0d136d979aed08a6d5be3fe",
+      "title": "esp_lora_gps_sd",
+      "description": "",
+      "docType": "1",
+      "master": "3b36ed350602881ec34db31d3be4c39a",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "a7dad1787f0449f4a3489b479211ce27": 1,
+        "03ddf89f4a934802a96a7b986b008475": 1,
+        "7d456c13392b4d7d8b110f0c077c80c1": 1,
+        "58557ab5dac544259249b4981dd6020c": 2
+      },
+      "BOM": [
+        [
+          "Value",
+          "Quantity",
+          "Package",
+          "Components",
+          "CustomPara"
+        ],
+        [
+          "GPS_MODULE_NEO-6M_pro",
+          1,
+          "GPS_MODULE",
+          "GPS_NEO-1EM",
+          {
+            "BOM_Manufacturer Part": "",
+            "puuid": "393bfbbfe76441c6805afc6d06285995",
+            "uuid": "7d456c13392b4d7d8b110f0c077c80c1"
+          }
+        ],
+        [
+          "Header-Male-2.54_1x4",
+          2,
+          "HDR-TH_4P-P2.54-V-M-1",
+          "H1,H2",
+          {
+            "BOM_Supplier": "LCSC",
+            "BOM_Manufacturer": "Ckmtw",
+            "BOM_Manufacturer Part": "210S-1*4P L=11.6MMGold-plated black",
+            "BOM_Supplier Part": "C124378",
+            "BOM_JLCPCB Part Class": "Extended Part",
+            "puuid": "31a453d5adfc45cea944a6450adf2918",
+            "uuid": "58557ab5dac544259249b4981dd6020c"
+          }
+        ],
+        [
+          "HELTEC WIFI LORA 32 (V2) COPY",
+          1,
+          "HELTEC-LORA32-WIFI-BLE-OLED",
+          "U3",
+          {
+            "BOM_Manufacturer": "Heltec",
+            "BOM_Manufacturer Part": "Heltec WiFi LoRa 32(V2)",
+            "BOM_Supplier": "Heltec",
+            "BOM_Supplier Part": "Heltec WiFi LoRa 32(V2)",
+            "puuid": "2d08db5b405148299b057650b7ee1cf4",
+            "uuid": "03ddf89f4a934802a96a7b986b008475"
+          }
+        ],
+        [
+          "MICRO SD CARD",
+          1,
+          "MICRO SD CARD",
+          "U11",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "RS-Online",
+            "puuid": "6a632a46aa604d7fb735ac2f6bba0007",
+            "uuid": "a7dad1787f0449f4a3489b479211ce27"
+          }
+        ]
+      ],
+      "updateTime": 1651258487,
+      "createTime": 1650536357,
+      "histories": [],
+      "created_at": "2022-04-21 13:19:17",
+      "updated_at": "2022-04-29 21:54:47"
+    },
+    {
+      "uuid": "c9b72736ee71a5bb639d0ef0b232c5a7",
+      "puuid": "ea4c2969e2589b6f19c9c203ecfc3924",
+      "title": "PCB_esp_lora_gps_sd",
+      "filename": "PCB_esp_lora_gps_sd.json",
+      "description": "",
+      "docType": "3",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "393bfbbfe76441c6805afc6d06285995": 1,
+        "2d08db5b405148299b057650b7ee1cf4": 1,
+        "6a632a46aa604d7fb735ac2f6bba0007": 1,
+        "31a453d5adfc45cea944a6450adf2918": 2
+      },
+      "BOM": [],
+      "updateTime": 1651136680,
+      "createTime": 1650537050,
+      "histories": [],
+      "created_at": "2022-04-21 13:30:50",
+      "updated_at": "2022-04-28 12:04:40"
+    }
+  ],
+  "sort": [],
+  "title": "Nakuja esp_lora_gps_sd",
+  "foldername": "Nakuja esp_lora_gps_sd",
+  "schfilename": "Nakuja esp_lora_gps_sd.json",
+  "schfilemtime": 1651258487846
+}
