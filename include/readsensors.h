@@ -6,7 +6,7 @@
 // #include <SPI.h>
 #include <mySD.h>
 #include <Adafruit_BMP085.h>
-#include <Adafruit_MPU6050.h>
+//#include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include "logdata.h"
 #include "defs.h"
@@ -15,11 +15,27 @@
 #include <SPI.h>
 #include <LoRa.h>
 
+//fc
+#include "I2Cdev.h"
+
+#include "MPU6050_6Axis_MotionApps20.h"
+
+#include "PID_v1.h"
+
+#include <ESP32Servo.h>
+
+#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
+    #include "Wire.h"
+#endif
+
 // using uart 2 for serial communication
 SoftwareSerial GPSModule(GPS_RX_PIN, GPS_TX_PIN); // RX, TX
 
 Adafruit_BMP085 bmp;
-Adafruit_MPU6050 mpu;
+//Adafruit_MPU6050 mpu;
+MPU6050 mpu;
+PID balancePID(&Input,&Output,&Setpoint,Kp,Ki,Kd,DIRECT);
+Servo ESC;
 
 int updates;
 int pos;
@@ -28,6 +44,25 @@ int stringplace = 0;
 String timeUp;
 String nmea[15];
 String labels[12]{"Time: ", "Status: ", "Latitude: ", "Hemisphere: ", "Longitude: ", "Hemisphere: ", "Speed: ", "Track Angle: ", "Date: "};
+
+//initialize ESC
+void calibrateESC () {
+   //Serial.println("Calibration procedure for Mamba ESC.");
+  //Serial.println("Turn on ESC.");
+  ESC.writeMicroseconds(0);
+  //Serial.println("Starting Calibration.");
+  delay(1000);
+  ESC.writeMicroseconds(1832);
+  //Serial.println("Writing Full Throttle.");
+  delay(1000);
+  ESC.writeMicroseconds(1312);
+  //Serial.println("Writing Full Reverse.");
+  delay(1000);
+  ESC.writeMicroseconds(1488);
+ // Serial.println("Writing Neutral.");
+  delay(1000);
+  //Serial.println("Calibration Complete.");
+}
 
 String ConvertLat()
 {
@@ -93,6 +128,10 @@ String ConvertLng()
     return lngfirst;
 }
 
+void dmpDataReady() {
+    mpuInterrupt = true;
+}
+
 // function to initialize bmp, mpu, lora module and the sd card module
 void init_components(SPIClass &spi)
 {
@@ -118,23 +157,77 @@ void init_components(SPIClass &spi)
     debugln("BMP180 FOUND");
 
     debugln("MPU6050 test!");
-    if (!mpu.begin())
-    {
+
+    // Initialize MPU6050 accelerometer
+  #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
+        Wire.begin(SDA, SCL, 400000);
+        //Wire.setClock(400000); // 400kHz I2C clock. Comment this line if having compilation difficulties
+    #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
+        Fastwire::setup(400, true);
+    #endif
+    mpu.initialize();
+    pinMode(INTERRUPT_PIN, INPUT_PULLUP); 
+
+    // load and configure the DMP
+    devStatus = mpu.dmpInitialize();
+
+    // supply your own gyro offsets here, scaled for min sensitivity
+    mpu.setXGyroOffset(220);
+    mpu.setYGyroOffset(76);
+    mpu.setZGyroOffset(-85);
+    mpu.setZAccelOffset(1788);
+
+    if (devStatus == 0) {
+        // Calibration Time: generate offsets and calibrate our MPU6050
+        mpu.CalibrateAccel(6);
+        mpu.CalibrateGyro(6);
+        mpu.PrintActiveOffsets();
+        // turn on the DMP, now that it's ready
+        //Serial.println(F("Enabling DMP..."));
+        mpu.setDMPEnabled(true);
+
+        // enable Arduino interrupt detection
+        //Serial.print(F("Enabling interrupt detection (Arduino external interrupt "));
+        //Serial.print(digitalPinToInterrupt(INTERRUPT_PIN));
+        //.println(F(")..."));
+        attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), dmpDataReady, RISING);
+        mpuIntStatus = mpu.getIntStatus();
+
+        // set our DMP Ready flag so the main loop() function knows it's okay to use it
+        //Serial.println(F("DMP ready! Waiting for first interrupt..."));
+        dmpReady = true;
+
+        // get expected DMP packet size for later comparison
+        packetSize = mpu.dmpGetFIFOPacketSize();
+    } else {
+        // ERROR!
+        // 1 = initial memory load failed
+        // 2 = DMP configuration updates failed
+        // (if it's going to break, usually the code will be 1)
+        //Serial.print(F("DMP Initialization failed (code "));
+        //Serial.print(devStatus);
+        //Serial.println(F(")"));
         debugln("Could not find a valid MPU6050 sensor, check wiring!");
         while (1)
         {
             delay(SHORT_DELAY);
         }
     }
-    else
-    {
-        ;
-    }
 
     debugln("MPU6050 FOUND");
-    mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
-    mpu.setGyroRange(MPU6050_RANGE_500_DEG);
-    mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
+    //mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
+    //mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+    //mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
+
+    debugln("Attaching ESC");
+    ESC.attach(14);
+    debugln("done attaching ESC");
+    debugln("init PID");
+    balancePID.SetMode(AUTOMATIC); //
+    balancePID.SetOutputLimits(-176,344);//to range from 1312 to 1832( -176,344
+    debugln("calibrating ESC");
+    calibrateESC();
+    debugln("done calibrating ESC");
 
     debugln("SD_CARD INITIALIZATION");
     if (!SD.begin(SDCARD_CS_PIN, SD_MOSI_PIN, SD_MISO_PIN, SD_SCK_PIN))
@@ -219,17 +312,18 @@ struct GPSReadings get_gps_readings()
 // Get the sensor readings
 struct SensorReadings get_readings()
 {
+    mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
     struct SensorReadings return_val;
-    sensors_event_t a, g, temp;
-    mpu.getEvent(&a, &g, &temp);
+    //sensors_event_t a, g, temp;
+    //mpu.getEvent(&a, &g, &temp);
     return_val.altitude = bmp.readAltitude(SEA_LEVEL_PRESSURE);
-    return_val.ax = a.acceleration.x;
-    return_val.ay = a.acceleration.y;
-    return_val.az = a.acceleration.z;
+    return_val.ax = ax;
+    return_val.ay = ay;
+    return_val.az = az;
 
-    return_val.gx = g.gyro.x;
-    return_val.gy = g.gyro.y;
-    return_val.gz = g.gyro.z;
+    return_val.gx = gx;
+    return_val.gy = gy;
+    return_val.gz = gz;
 
     return return_val;
 }

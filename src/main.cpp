@@ -10,6 +10,7 @@
 #include "../include/transmitlora.h"
 #include "../include/defs.h"
 #include <SPI.h>
+#include <reaction-wheel.h>
 
 static const BaseType_t pro_cpu = 0;
 
@@ -158,6 +159,7 @@ void setup()
     xTaskCreatePinnedToCore(LoRaTelemetryTask, "LoRaTelemetryTask", 10000, NULL, 1, &LoRaTelemetryTaskHandle, pro_cpu);
     xTaskCreatePinnedToCore(SDWriteTask, "SDWriteTask", 10000, NULL, 1, &SDWriteTaskHandle, pro_cpu);
     xTaskCreatePinnedToCore(GetDataTask, "GetDataTask", 10000, NULL, 1, &GetDataTaskHandle, app_cpu);
+    xTaskCreate(TaskRollControl, "ReactionWheel", 10000, NULL, 1, &TaskRollControl_Handler);
 
     // Delete "setup and loop" task
     vTaskDelete(NULL);

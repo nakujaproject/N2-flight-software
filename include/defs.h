@@ -1,6 +1,8 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+#include "MPU6050_6Axis_MotionApps20.h"
+
 #define DEBUG 1
 #if DEBUG == 1
 #define debug(x) Serial.print(x)
@@ -111,4 +113,44 @@ struct SendValues
     uint16_t state;
 };
 
+int16_t accData[3], gyrData[3];
+
+#define OUTPUT_READABLE_YAWPITCHROLL
+
+#define INTERRUPT_PIN 2 
+
+#define SDA 21
+#define SCL 22
+
+// MPU control/status vars
+bool dmpReady = false;  // set true if DMP init was successful
+uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
+uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
+uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
+uint16_t fifoCount;     // count of all bytes currently in  
+uint8_t fifoBuffer[64]; // FIFO storage buffer
+
+// orientation/motion vars
+Quaternion quaternion;           // [w, x, y, z]         quaternion container
+VectorInt16 aa;         // [x, y, z]            accel sensor measurements
+VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
+VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measurements
+VectorFloat gravity;    // [x, y, z]            gravity vector
+float euler[3];         // [psi, theta, phi]    Euler angle container
+float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+
+// packet structure for InvenSense teapot demo
+uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\n' };
+
+volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
+
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
+
+double Input;
+static double Output;
+double Setpoint = 0;
+float Kp = 2.0;
+float Ki = 0.0;
+float Kd = 1.0;
 #endif
