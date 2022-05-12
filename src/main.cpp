@@ -22,6 +22,8 @@ TaskHandle_t GetDataTaskHandle;
 
 TaskHandle_t SDWriteTaskHandle;
 
+TaskHandle_t TaskRollControl_Handler;
+
 static uint8_t queue_length = 10;
 static QueueHandle_t telemetry_queue;
 static QueueHandle_t sdwrite_queue;
@@ -159,7 +161,9 @@ void setup()
     xTaskCreatePinnedToCore(LoRaTelemetryTask, "LoRaTelemetryTask", 10000, NULL, 1, &LoRaTelemetryTaskHandle, pro_cpu);
     xTaskCreatePinnedToCore(SDWriteTask, "SDWriteTask", 10000, NULL, 1, &SDWriteTaskHandle, pro_cpu);
     xTaskCreatePinnedToCore(GetDataTask, "GetDataTask", 10000, NULL, 1, &GetDataTaskHandle, app_cpu);
-    xTaskCreate(TaskRollControl, "ReactionWheel", 10000, NULL, 1, &TaskRollControl_Handler);
+
+    reactionWheelParams rollTaskParam = {&mpu, &dmpReady};
+    xTaskCreate(TaskRollControl, "ReactionWheel", 10000, (void *)&rollTaskParam, 1, &TaskRollControl_Handler);
 
     // Delete "setup and loop" task
     vTaskDelete(NULL);

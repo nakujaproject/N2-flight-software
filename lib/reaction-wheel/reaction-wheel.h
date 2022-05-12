@@ -1,18 +1,34 @@
+#ifndef REACTIONwHEEL_H
+#define REACTIONwHEEL_H
 #include <Arduino.h>
+#include "PID_v1.h"
+
+#include <ESP32Servo.h>
+#include "MPU6050_6Axis_MotionApps20.h"
 
 #define sampleTime 10
-double elapsedTime = 0;
-double timeCur = 0;
-double timePrev = 0;
-double anglePrev = 0;
-double angleCur = 0;
-double _speed = 0;
 
-double rollVel=0;
-double pwm = 0;
-
-TaskHandle_t TaskRollControl_Handler;
 
 void TaskRollControl( void *pvParameters );
 void Write_pwm(float);
 double Constrainpwm (double, double, double);
+
+
+
+
+
+#define OUTPUT_READABLE_YAWPITCHROLL
+
+#define SDA 21
+#define SCL 22
+
+// MPU control/status vars
+
+
+
+
+struct reactionWheelParams{
+    MPU6050 *mpu;
+    bool *dmpReady;
+};
+#endif

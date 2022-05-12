@@ -20,10 +20,6 @@
 
 #include "MPU6050_6Axis_MotionApps20.h"
 
-#include "PID_v1.h"
-
-#include <ESP32Servo.h>
-
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
     #include "Wire.h"
 #endif
@@ -34,8 +30,7 @@ SoftwareSerial GPSModule(GPS_RX_PIN, GPS_TX_PIN); // RX, TX
 Adafruit_BMP085 bmp;
 //Adafruit_MPU6050 mpu;
 MPU6050 mpu;
-PID balancePID(&Input,&Output,&Setpoint,Kp,Ki,Kd,DIRECT);
-Servo ESC;
+
 
 int updates;
 int pos;
@@ -45,24 +40,6 @@ String timeUp;
 String nmea[15];
 String labels[12]{"Time: ", "Status: ", "Latitude: ", "Hemisphere: ", "Longitude: ", "Hemisphere: ", "Speed: ", "Track Angle: ", "Date: "};
 
-//initialize ESC
-void calibrateESC () {
-   //Serial.println("Calibration procedure for Mamba ESC.");
-  //Serial.println("Turn on ESC.");
-  ESC.writeMicroseconds(0);
-  //Serial.println("Starting Calibration.");
-  delay(1000);
-  ESC.writeMicroseconds(1832);
-  //Serial.println("Writing Full Throttle.");
-  delay(1000);
-  ESC.writeMicroseconds(1312);
-  //Serial.println("Writing Full Reverse.");
-  delay(1000);
-  ESC.writeMicroseconds(1488);
- // Serial.println("Writing Neutral.");
-  delay(1000);
-  //Serial.println("Calibration Complete.");
-}
 
 String ConvertLat()
 {
@@ -218,16 +195,6 @@ void init_components(SPIClass &spi)
     //mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
     //mpu.setGyroRange(MPU6050_RANGE_500_DEG);
     //mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
-
-    debugln("Attaching ESC");
-    ESC.attach(14);
-    debugln("done attaching ESC");
-    debugln("init PID");
-    balancePID.SetMode(AUTOMATIC); //
-    balancePID.SetOutputLimits(-176,344);//to range from 1312 to 1832( -176,344
-    debugln("calibrating ESC");
-    calibrateESC();
-    debugln("done calibrating ESC");
 
     debugln("SD_CARD INITIALIZATION");
     if (!SD.begin(SDCARD_CS_PIN, SD_MOSI_PIN, SD_MISO_PIN, SD_SCK_PIN))
