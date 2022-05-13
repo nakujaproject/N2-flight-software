@@ -1,22 +1,11 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include "defs.h" 
-#include "readsensors.h" 
+#include "defs.h"
+#include "readsensors.h"
 
-
-// Ejection Fires the explosive charge using a relay or a mosfet
-void Ejection()
-{
-  // TODO: set timer here
-  digitalWrite(EJECTION_PIN, HIGH);
-}
-
-// Done_ejection turns of the pin that fired the ejection charge
-void Done_ejection()
-{
-  digitalWrite(EJECTION_PIN, LOW);
-}
+void ejection();
+void ejectionTimerCallback(TimerHandle_t ejectionTimerHandle);
 
 // DummyData returns a dummy data sample for LogData
 // This is helpful for analysis
@@ -43,9 +32,9 @@ struct LogData DummyData()
 // formart_data This formats data that we are going to save to SD card
 // We pass in our SensorReadings, FilteredValues and GPSReadings
 // We save all the data points we are collecting
-struct LogData formart_data(SensorReadings readings, FilteredValues filtered_values, GPSReadings gpsReadings)
+struct LogData formart_data(SensorReadings readings, FilteredValues filtered_values)
 {
-  struct LogData ld;
+  struct LogData ld = {0};
   ld.altitude = readings.altitude;
   ld.ax = readings.ax;
   ld.ay = readings.ay;
@@ -56,8 +45,6 @@ struct LogData formart_data(SensorReadings readings, FilteredValues filtered_val
   ld.filtered_s = filtered_values.displacement;
   ld.filtered_a = filtered_values.acceleration;
   ld.filtered_v = filtered_values.velocity;
-  ld.latitude = gpsReadings.latitude;
-  ld.longitude = gpsReadings.longitude;
   return ld;
 }
 
@@ -65,10 +52,12 @@ struct LogData formart_data(SensorReadings readings, FilteredValues filtered_val
 // Currently we are sending altitude, state and timeStamp
 struct SendValues formart_send_data(LogData readings)
 {
-  struct SendValues sv;
+  struct SendValues sv = {0};
   sv.altitude = readings.altitude;
   sv.state = readings.state;
   sv.timeStamp = readings.timeStamp;
+  sv.latitude = readings.latitude;
+  sv.longitude = readings.longitude;
   return sv;
 }
 
@@ -77,12 +66,17 @@ float get_base_altitude()
 {
   float altitude = 0;
   SensorReadings readings;
-  for (int i = 0; i < 1000; i++)
+  for (int i = 0; i < 10; i++)
   {
     readings = get_readings();
+    debugln(readings.altitude);
     altitude = altitude + readings.altitude;
-    delay(SHORT_DELAY);
+
+    //TODO: why must we delay here?
   }
-  return altitude / 1000.0;
+  altitude = altitude / 10.0;
+  debugln(altitude);
+  delay(5000);
+  return altitude;
 }
 #endif

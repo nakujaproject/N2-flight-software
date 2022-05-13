@@ -2,14 +2,18 @@
 #define DEFINITIONS_H
 
 
+#include <WiFiUdp.h>
+#include <WebServer.h>
 
 #define DEBUG 1
 #if DEBUG == 1
 #define debug(x) Serial.print(x)
 #define debugln(x) Serial.println(x)
+#define debugf(x, y) Serial.printf(x, y)
 #else
 #define debug(x)
 #define debugln(x)
+#define debugf(x, y)
 #endif
 
 #define SEA_LEVEL_PRESSURE 102400
@@ -18,7 +22,7 @@
 #define SETUP_DELAY 5000
 
 // define sd card VSPI
-const uint8_t SDCARD_CS_PIN =  5;
+const uint8_t SDCARD_CS_PIN = 5;
 const uint8_t SD_MOSI_PIN = 23;
 const uint8_t SD_MISO_PIN = 19;
 const uint8_t SD_SCK_PIN = 18;
@@ -34,6 +38,21 @@ const uint8_t IRQ_LORA_PIN = 2;
 const uint8_t GPS_TX_PIN = 17;
 const uint8_t GPS_RX_PIN = 16;
 
+const char *ssid = "appendix";
+const char *key = "123456789";
+
+// Raspberry Pi Mosquitto MQTT Broker
+#define MQTT_HOST IPAddress(192, 168, 4, 2)
+#define MQTT_PORT 1883
+#define MQTT_PUB_TOPIC "onboard/data"
+#define MQTT_USERNAME "user"
+#define MQTT_PASSWORD "password"
+
+WiFiUDP Udp;
+WebServer server(80);
+
+const int UDP_PORT = 4210;
+
 #define SHORT_DELAY 10
 
 #define BAUD_RATE 115200
@@ -41,8 +60,11 @@ const uint8_t GPS_RX_PIN = 16;
 // Pin to start ignition
 #define EJECTION_PIN 4
 
+extern portMUX_TYPE mutex;
 
-static float BASE_ALTITUDE;
+extern volatile int state;
+
+extern float BASE_ALTITUDE;
 
 static float MAX_ALTITUDE;
 
@@ -52,6 +74,7 @@ const int LORA_SF = 7;        // spread factor
 const long LORA_BW = 125E3;   // bandwidth 125 kHz
 
 #define LORA_SYNC_WORD 0xF3
+
 // This struct is used to save all our datapoints.
 // It includes rocket altitude, accelerations in the x, y and z directions
 // Gryroscope values in the x, y and z direcion
@@ -111,6 +134,8 @@ struct SendValues
     uint64_t timeStamp;
     float altitude;
     uint16_t state;
+    float latitude;
+    float longitude;
 };
 
 int16_t ax, ay, az;

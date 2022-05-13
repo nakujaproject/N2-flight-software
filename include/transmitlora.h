@@ -4,9 +4,10 @@
 #include <SPI.h>
 #include <LoRa.h>
 #include "defs.h"
+#include "functions.h"
 #include "readsensors.h"
 
-char *printLoraMessage(SendValues sv)
+char *printTransmitMessageLoRa(SendValues sv)
 {
     // The assigned size is calculated to fit the string
     char *message = (char *)pvPortMalloc(60);
@@ -14,7 +15,7 @@ char *printLoraMessage(SendValues sv)
     if (!message)
         return NULL;
 
-    snprintf(message,60, "{\"timestamp\":%lld,\"state\":%d,\"altitude\":%.3f}\n", sv.timeStamp, sv.state, sv.altitude);
+    snprintf(message, 60, "{\"timestamp\":%lld,\"state\":%d,\"altitude\":%.3f}\n", sv.timeStamp, sv.state, sv.altitude);
     return message;
 }
 
@@ -22,67 +23,75 @@ void sendTelemetryLora(SendValues sv[5])
 {
     LoRa.beginPacket();
 
+    // TODO: optimize size
     char combinedMessage[300];
     strcpy(combinedMessage, "");
     for (int i = 0; i < 5; i++)
     {
-
-        char *message = printLoraMessage(sv[i]);
+        char *message = printTransmitMessageLoRa(sv[i]);
         strcat(combinedMessage, message);
         vPortFree(message);
     }
-    debugln(combinedMessage);
+    // debugln(combinedMessage);
     LoRa.print(combinedMessage);
     // send packet
     LoRa.endPacket();
-    debugln("Done");
+    // debugln("Sent Lora Done");
 }
 
-int processInputCommand(int currentState)
+void processInputCommandLoRa()
 {
-
     // received a packet
     if (LoRa.available() > 0)
     {
-        int command = LoRa.parseInt();
+        char command = LoRa.read();
         switch (command)
         {
-        case 0:
-            return 0;
-        case 1:
-            return 1;
-        case 2:
-            return 2;
-        case 3:
-            return 3;
-        case 4:
-            return 4;
+        case '0':
+            portENTER_CRITICAL(&mutex);
+            state = 0;
+            portEXIT_CRITICAL(&mutex);
+            break;
+        case '1':
+            portENTER_CRITICAL(&mutex);
+            state = 1;
+            portEXIT_CRITICAL(&mutex);
+            break;
+        case '2':
+            portENTER_CRITICAL(&mutex);
+            state = 2;
+            portEXIT_CRITICAL(&mutex);
+            break;
+        case '3':
+            portENTER_CRITICAL(&mutex);
+            state = 3;
+            portEXIT_CRITICAL(&mutex);
+            break;
+        case '4':
+            portENTER_CRITICAL(&mutex);
+            state = 4;
+            portEXIT_CRITICAL(&mutex);
+            break;
         default:
-            return 0;
+            // eject parachute
+            ejection();
         }
-    }
-    else
-    {
-        return currentState;
     }
 }
 
-int handleLora(int currentState, SendValues sv[5])
+void handleLora(SendValues sv[5])
 {
 
-    int rval;
     // check for incoming data stream
     int packetSize = LoRa.parsePacket();
     if (packetSize)
     {
-        rval = processInputCommand(currentState);
+        processInputCommandLoRa();
     }
     else
     {
         sendTelemetryLora(sv);
-        rval = currentState;
     }
-    return rval;
 }
 
 #endif

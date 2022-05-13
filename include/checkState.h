@@ -26,7 +26,7 @@ int checkApogee(float velocity, float altitude)
   if (velocity < 0)
   {
     // Fire ejection charge
-    Ejection();
+    ejection();
     MAX_ALTITUDE = altitude;
     return 2;
   }

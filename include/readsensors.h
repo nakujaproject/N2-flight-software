@@ -13,6 +13,7 @@
 #include <TinyGPS++.h>
 #include <SoftwareSerial.h>
 #include <SPI.h>
+#include <WiFi.h>
 #include <LoRa.h>
 
 //fc
@@ -32,77 +33,20 @@ Adafruit_BMP085 bmp;
 MPU6050 mpu;
 
 
-int updates;
-int pos;
-int stringplace = 0;
-
-String timeUp;
-String nmea[15];
-String labels[12]{"Time: ", "Status: ", "Latitude: ", "Hemisphere: ", "Longitude: ", "Hemisphere: ", "Speed: ", "Track Angle: ", "Date: "};
-
-
-String ConvertLat()
+void createAccessPoint()
 {
-    String posneg = "";
-    if (nmea[3] == "S")
-    {
-        posneg = "-";
-    }
-    String latfirst;
-    float latsecond;
-    for (int i = 0; i < nmea[2].length(); i++)
-    {
-        if (nmea[2].substring(i, i + 1) == ".")
-        {
-            latfirst = nmea[2].substring(0, i - 2);
-            latsecond = nmea[2].substring(i - 2).toFloat();
-        }
-    }
-    latsecond = latsecond / 60;
-    String CalcLat = "";
-
-    char charVal[9];
-    dtostrf(latsecond, 4, 6, charVal);
-    for (int i = 0; i < sizeof(charVal); i++)
-    {
-        CalcLat += charVal[i];
-    }
-    latfirst += CalcLat.substring(1);
-    latfirst = posneg += latfirst;
-    return latfirst;
-}
-
-String ConvertLng()
-{
-    String posneg = "";
-    if (nmea[5] == "W")
-    {
-        posneg = "-";
-    }
-
-    String lngfirst;
-    float lngsecond;
-    for (int i = 0; i < nmea[4].length(); i++)
-    {
-        if (nmea[4].substring(i, i + 1) == ".")
-        {
-            lngfirst = nmea[4].substring(0, i - 2);
-            // debugln(lngfirst);
-            lngsecond = nmea[4].substring(i - 2).toFloat();
-            // debugln(lngsecond);
-        }
-    }
-    lngsecond = lngsecond / 60;
-    String CalcLng = "";
-    char charVal[9];
-    dtostrf(lngsecond, 4, 6, charVal);
-    for (int i = 0; i < sizeof(charVal); i++)
-    {
-        CalcLng += charVal[i];
-    }
-    lngfirst += CalcLng.substring(1);
-    lngfirst = posneg += lngfirst;
-    return lngfirst;
+    // Connect to Wi-Fi network with SSID and password
+    debugln("Creating Rocket Access Point...");
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP(ssid, key);
+    IPAddress IP = WiFi.softAPIP();
+    debug("ssid:");
+    debugln(ssid);
+    debug("key:");
+    debugln(key);
+    debug("Rocket IP address: ");
+    debugln(IP);
+    Udp.begin(UDP_PORT);
 }
 
 void dmpDataReady() {
@@ -113,9 +57,7 @@ void dmpDataReady() {
 void init_components(SPIClass &spi)
 {
 
-    // debugln("GPS INITIALIZATION");
-    // GPSModule.begin(9600);
-    // debugln("GPS FOUND");
+    GPSModule.begin(9600);
 
     debugln("BMP180 INITIALIZATION");
     if (!bmp.begin())
@@ -234,14 +176,79 @@ void init_components(SPIClass &spi)
     debug(LORA_BW);
     debug("SF :");
     debugln(LORA_SF);
-    debugln("LORA FOUND");
+}
+
+String ConvertLat(String nmea[15])
+{
+    String posneg = "";
+    if (nmea[3] == "S")
+    {
+        posneg = "-";
+    }
+    String latfirst;
+    float latsecond;
+    for (int i = 0; i < nmea[2].length(); i++)
+    {
+        if (nmea[2].substring(i, i + 1) == ".")
+        {
+            latfirst = nmea[2].substring(0, i - 2);
+            latsecond = nmea[2].substring(i - 2).toFloat();
+        }
+    }
+    latsecond = latsecond / 60;
+    String CalcLat = "";
+
+    char charVal[9];
+    dtostrf(latsecond, 4, 6, charVal);
+    for (int i = 0; i < sizeof(charVal); i++)
+    {
+        CalcLat += charVal[i];
+    }
+    latfirst += CalcLat.substring(1);
+    latfirst = posneg += latfirst;
+    return latfirst;
+}
+
+String ConvertLng(String nmea[15])
+{
+    String posneg = "";
+    if (nmea[5] == "W")
+    {
+        posneg = "-";
+    }
+
+    String lngfirst;
+    float lngsecond;
+    for (int i = 0; i < nmea[4].length(); i++)
+    {
+        if (nmea[4].substring(i, i + 1) == ".")
+        {
+            lngfirst = nmea[4].substring(0, i - 2);
+            // debugln(lngfirst);
+            lngsecond = nmea[4].substring(i - 2).toFloat();
+            // debugln(lngsecond);
+        }
+    }
+    lngsecond = lngsecond / 60;
+    String CalcLng = "";
+    char charVal[9];
+    dtostrf(lngsecond, 4, 6, charVal);
+    for (int i = 0; i < sizeof(charVal); i++)
+    {
+        CalcLng += charVal[i];
+    }
+    lngfirst += CalcLng.substring(1);
+    lngfirst = posneg += lngfirst;
+    return lngfirst;
 }
 
 // Get the gps readings from the gps sensor
 struct GPSReadings get_gps_readings()
 {
+    String nmea[15];
+    int stringplace = 0;
+    int pos = 0;
     struct GPSReadings gpsReadings;
-    Serial.flush();
     GPSModule.flush();
     while (GPSModule.available() > 0)
     {
@@ -249,6 +256,7 @@ struct GPSReadings get_gps_readings()
     }
     if (GPSModule.find("$GPRMC,"))
     {
+        debug("here");
         String tempMsg = GPSModule.readStringUntil('\n');
         for (int i = 0; i < tempMsg.length(); i++)
         {
@@ -263,15 +271,11 @@ struct GPSReadings get_gps_readings()
                 nmea[pos] = tempMsg.substring(stringplace, i);
             }
         }
-        updates++;
-        float lati = ConvertLat().toFloat();
-        float lngi = ConvertLng().toFloat();
+        float lati = ConvertLat(nmea).toFloat();
+        float lngi = ConvertLng(nmea).toFloat();
         gpsReadings.latitude = lati;
         gpsReadings.longitude = lngi;
     }
-
-    stringplace = 0;
-    pos = 0;
 
     return gpsReadings;
 }
