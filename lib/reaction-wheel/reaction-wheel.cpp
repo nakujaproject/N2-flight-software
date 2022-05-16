@@ -27,9 +27,7 @@ PID balancePID(&Input,&Output,&Setpoint,Kp,Ki,Kd,DIRECT);
 
 int16_t accData[3], gyrData[3];
 
-
 Servo ESC;
-
 
 uint8_t fifoBuffer[64]; // FIFO storage buffer
 
@@ -51,21 +49,20 @@ void Write_pwm(float motorspeed)
 }
 //initialize ESC
 void calibrateESC () {
-   //Serial.println("Calibration procedure for Mamba ESC.");
-  //Serial.println("Turn on ESC.");
+  debugln("Turn on ESC.");
   ESC.writeMicroseconds(0);
-  //Serial.println("Starting Calibration.");
+  debugln("Starting Calibration.");
   delay(1000);
   ESC.writeMicroseconds(1832);
-  //Serial.println("Writing Full Throttle.");
+  debugln("Writing Full Throttle.");
   delay(1000);
   ESC.writeMicroseconds(1312);
-  //Serial.println("Writing Full Reverse.");
+  debugln("Writing Full Reverse.");
   delay(1000);
   ESC.writeMicroseconds(1488);
- // Serial.println("Writing Neutral.");
+  debugln("Writing Neutral.");
   delay(1000);
-  //Serial.println("Calibration Complete.");
+  debugln("Calibration Complete.");
 }
 
 double Constrainpwm(double pwm, double Min, double Max)
@@ -110,30 +107,15 @@ void TaskRollControl(void *pvParameters)
       angleCur = Input;
       elapsedTime = timeCur - timePrev;
       rollVel = ((angleCur - anglePrev) / (elapsedTime / 1000.00));
-
-      //            Serial.print("ypr\t");
-      //            Serial.print(ypr[0] * 180/M_PI);
-      //            Serial.print("\t");
-      //            Serial.print(ypr[1] * 180/M_PI);
-      //            Serial.print("\t");
-      //            Serial.println(ypr[2] * 180/M_PI);
-
       while (Input <= -180)
         Input += 360;
       while (Input > 180)
         Input -= 360;
 
-      Serial.print("Input:\t");
-      Serial.println(Input);
-
-      // blink LED to indicate activity
-      // blinkState = !blinkState;
-      // digitalWrite(LED_PIN, blinkState);
+      debug("Input:\t");
+      debugln(Input);
 
       Setpoint = 0;
-
-      // Serial.print("Input:\t");
-      // Serial.println(Input);
 
       if (Input < 0)
       {
@@ -144,21 +126,13 @@ void TaskRollControl(void *pvParameters)
         balancePID.SetControllerDirection(DIRECT);
       }
 
-      // Serial.print("Output1:\t");
-      // Serial.println(Output);
-
       balancePID.Compute();
 
-      // Serial.print("Output2:\t");
-      // Serial.println(Output);
       pwm = 1488 + Output;
       Constrainpwm(pwm, 1450, 1510);
 
       timePrev = timeCur;
       anglePrev = angleCur;
-      // pwm Output
-      // Serial.print("pwm: ");
-      // Serial.println(pwm);
 
       // pwm, output
       Write_pwm(pwm);

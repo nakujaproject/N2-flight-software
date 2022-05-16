@@ -8,24 +8,14 @@
 
 #define sampleTime 10
 
-
 void TaskRollControl( void *pvParameters );
 void Write_pwm(float);
 double Constrainpwm (double, double, double);
-
-
-
-
 
 #define OUTPUT_READABLE_YAWPITCHROLL
 
 #define SDA 21
 #define SCL 22
-
-// MPU control/status vars
-
-
-
 
 struct reactionWheelParams{
     MPU6050 *mpu;

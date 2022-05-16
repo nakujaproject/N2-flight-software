@@ -33,8 +33,6 @@ TaskHandle_t SDWriteTaskHandle;
 
 TaskHandle_t TaskRollControl_Handler;
 
-static uint8_t queue_length = 10;
-static QueueHandle_t telemetry_queue;
 TaskHandle_t GPSTaskHandle;
 
 // if 1 chute has been deployed
@@ -315,7 +313,6 @@ void setup()
     reactionWheelParams rollTaskParam = {&mpu, &dmpReady};
     xTaskCreate(TaskRollControl, "ReactionWheel", 10000, (void *)&rollTaskParam, 1, &TaskRollControl_Handler);
 
-    // Delete "setup and loop" task
     // Delete setup and loop tasks
     vTaskDelete(NULL);
 }

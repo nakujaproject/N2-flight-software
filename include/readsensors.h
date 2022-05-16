@@ -6,7 +6,6 @@
 // #include <SPI.h>
 #include <mySD.h>
 #include <Adafruit_BMP085.h>
-//#include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include "logdata.h"
 #include "defs.h"
@@ -16,7 +15,6 @@
 #include <WiFi.h>
 #include <LoRa.h>
 
-//fc
 #include "I2Cdev.h"
 
 #include "MPU6050_6Axis_MotionApps20.h"
@@ -29,7 +27,6 @@
 SoftwareSerial GPSModule(GPS_RX_PIN, GPS_TX_PIN); // RX, TX
 
 Adafruit_BMP085 bmp;
-//Adafruit_MPU6050 mpu;
 MPU6050 mpu;
 
 
@@ -80,7 +77,6 @@ void init_components(SPIClass &spi)
     // Initialize MPU6050 accelerometer
   #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
         Wire.begin(SDA, SCL, 400000);
-        //Wire.setClock(400000); // 400kHz I2C clock. Comment this line if having compilation difficulties
     #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
         Fastwire::setup(400, true);
     #endif
@@ -102,18 +98,16 @@ void init_components(SPIClass &spi)
         mpu.CalibrateGyro(6);
         mpu.PrintActiveOffsets();
         // turn on the DMP, now that it's ready
-        //Serial.println(F("Enabling DMP..."));
+        debugln("Enabling DMP");
         mpu.setDMPEnabled(true);
 
         // enable Arduino interrupt detection
-        //Serial.print(F("Enabling interrupt detection (Arduino external interrupt "));
-        //Serial.print(digitalPinToInterrupt(INTERRUPT_PIN));
-        //.println(F(")..."));
+        debugln("Enabling interrupt detection (Arduino external interrupt ");
         attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), dmpDataReady, RISING);
         mpuIntStatus = mpu.getIntStatus();
 
         // set our DMP Ready flag so the main loop() function knows it's okay to use it
-        //Serial.println(F("DMP ready! Waiting for first interrupt..."));
+        debugln("DMP ready! Waiting for first interrupt");
         dmpReady = true;
 
         // get expected DMP packet size for later comparison
@@ -123,9 +117,8 @@ void init_components(SPIClass &spi)
         // 1 = initial memory load failed
         // 2 = DMP configuration updates failed
         // (if it's going to break, usually the code will be 1)
-        //Serial.print(F("DMP Initialization failed (code "));
-        //Serial.print(devStatus);
-        //Serial.println(F(")"));
+        debug("DMP Initialization failed (code ");
+        debugln(devStatus);
         debugln("Could not find a valid MPU6050 sensor, check wiring!");
         while (1)
         {
@@ -134,10 +127,6 @@ void init_components(SPIClass &spi)
     }
 
     debugln("MPU6050 FOUND");
-    //mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
-    //mpu.setGyroRange(MPU6050_RANGE_500_DEG);
-    //mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
-
     debugln("SD_CARD INITIALIZATION");
     if (!SD.begin(SDCARD_CS_PIN, SD_MOSI_PIN, SD_MISO_PIN, SD_SCK_PIN))
     {
@@ -283,10 +272,8 @@ struct GPSReadings get_gps_readings()
 // Get the sensor readings
 struct SensorReadings get_readings()
 {
-    mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
     struct SensorReadings return_val;
-    //sensors_event_t a, g, temp;
-    //mpu.getEvent(&a, &g, &temp);
+    mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
     return_val.altitude = bmp.readAltitude(SEA_LEVEL_PRESSURE);
     return_val.ax = ax;
     return_val.ay = ay;
