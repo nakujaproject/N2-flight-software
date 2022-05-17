@@ -311,7 +311,7 @@ void setup()
     xTaskCreatePinnedToCore(SDWriteTask, "SDWriteTask", 4000, NULL, 1, &SDWriteTaskHandle, 1);
 
     reactionWheelParams rollTaskParam = {&mpu, &dmpReady};
-    xTaskCreate(TaskRollControl, "ReactionWheel", 10000, (void *)&rollTaskParam, 1, &TaskRollControl_Handler);
+    xTaskCreatePinnedToCore(TaskRollControl, "ReactionWheel", 10000, (void *)&rollTaskParam, 1, &TaskRollControl_Handler, 1);
 
     // Delete setup and loop tasks
     vTaskDelete(NULL);

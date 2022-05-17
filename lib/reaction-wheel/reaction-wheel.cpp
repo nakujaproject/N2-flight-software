@@ -38,7 +38,7 @@ VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measur
 VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measurements
 VectorFloat gravity;    // [x, y, z]            gravity vector
 float euler[3];         // [psi, theta, phi]    Euler angle container
-float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+//float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
 
 // packet structure for InvenSense teapot demo
 uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\n' };
@@ -76,15 +76,30 @@ double Constrainpwm(double pwm, double Min, double Max)
     return pwm;
 }
 
+void ReactionWheelSetup(void) {
+  ESC.attach(14);
+  calibrateESC();
+  balancePID.SetMode(AUTOMATIC); //
+  balancePID.SetOutputLimits(-176,344);//to range from 1312 to 1832( -176,344
+}
+
+double GetRollVelocity(MPU6050 mpu, double* currTime, double* currAngle){
+  static float ypr[3];
+  mpu.dmpGetQuaternion(&quaternion, fifoBuffer);
+  mpu.dmpGetGravity(&gravity, &quaternion);
+  mpu.dmpGetYawPitchRoll(ypr, &quaternion, &gravity);
+  Input = ypr[0] * 180 / M_PI;
+  *currTime = millis();
+  *currAngle = Input;
+  elapsedTime = timeCur - timePrev;
+  return ((angleCur - anglePrev) / (elapsedTime / 1000.00));
+}
+
 void TaskRollControl(void *pvParameters)
 {
   reactionWheelParams * rollParam = (reactionWheelParams *)pvParameters;
   MPU6050 mpu = *rollParam->mpu;
   bool dmpReady = rollParam->dmpReady;
-  ESC.attach(14);
-  calibrateESC();
-  balancePID.SetMode(AUTOMATIC); //
-    balancePID.SetOutputLimits(-176,344);//to range from 1312 to 1832( -176,344
   // TODO move MPU and ESC initialization here
   for (;;)
   {
@@ -94,19 +109,7 @@ void TaskRollControl(void *pvParameters)
     // read a packet from FIFO
     if ((mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) && (elapsedTime > sampleTime))
     { // Get the Latest packet
-      // display Euler angles in degrees
-      mpu.dmpGetQuaternion(&quaternion, fifoBuffer);
-      mpu.dmpGetGravity(&gravity, &quaternion);
-      mpu.dmpGetYawPitchRoll(ypr, &quaternion, &gravity);
-
-      mpu.getMotion6(&accData[0], &accData[1], &accData[2], &gyrData[0], &gyrData[1], &gyrData[2]);
-
-      Input = ypr[0] * 180 / M_PI;
-      timePrev = timeCur;
-      timeCur = millis();
-      angleCur = Input;
-      elapsedTime = timeCur - timePrev;
-      rollVel = ((angleCur - anglePrev) / (elapsedTime / 1000.00));
+      rollVel = GetRollVelocity(mpu, &timeCur, &angleCur);
       while (Input <= -180)
         Input += 360;
       while (Input > 180)
@@ -114,8 +117,6 @@ void TaskRollControl(void *pvParameters)
 
       debug("Input:\t");
       debugln(Input);
-
-      Setpoint = 0;
 
       if (Input < 0)
       {
