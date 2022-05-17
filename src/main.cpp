@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "heltec.h" 
+
 /*
  * Check brownout issues to prevent ESP32 from re-booting unexpectedly
  */
@@ -8,7 +8,6 @@
 #include "../include/checkState.h"
 #include "../include/logdata.h"
 #include "../include/readsensors.h"
-#include "../include/transmitlora.h"
 #include "../include/transmitwifi.h"
 #include "../include/defs.h"
 #include <SPI.h>
@@ -22,7 +21,7 @@ TimerHandle_t ejectionTimerHandle = NULL;
 
 portMUX_TYPE mutex = portMUX_INITIALIZER_UNLOCKED;
 
-TaskHandle_t LoRaTelemetryTaskHandle;
+
 TaskHandle_t WiFiTelemetryTaskHandle;
 
 TaskHandle_t GetDataTaskHandle;
@@ -38,12 +37,12 @@ float BASE_ALTITUDE = 0;
 
 volatile int state = 0;
 
-static uint8_t lora_queue_length = 100;
+
 static uint8_t wifi_queue_length = 100;
 static uint8_t sd_queue_length = 150;
 static uint8_t gps_queue_length = 100;
 
-static QueueHandle_t lora_telemetry_queue;
+
 static QueueHandle_t wifi_telemetry_queue;
 static QueueHandle_t sdwrite_queue;
 static QueueHandle_t gps_queue;
@@ -161,39 +160,6 @@ void WiFiTelemetryTask(void *parameter)
     }
 }
 
-void LoRaTelemetryTask(void *parameter)
-{
-
-    struct SendValues sv = {0};
-    struct SendValues svRecords[5];
-    struct GPSReadings gpsReadings = {0};
-    float latitude = 0;
-    float longitude = 0;
-
-    for (;;)
-    {
-        // debugf("lora task core %d\n", xPortGetCoreID());
-        for (int i = 0; i < 5; i++)
-        {
-            if (xQueueReceive(lora_telemetry_queue, (void *)&sv, 10) == pdTRUE)
-            {
-                svRecords[i] = sv;
-                svRecords[i].latitude = latitude;
-                svRecords[i].longitude = longitude;
-            }
-            if (xQueueReceive(gps_queue, (void *)&gpsReadings, 10) == pdTRUE)
-            {
-                latitude = gpsReadings.latitude;
-                longitude = gpsReadings.longitude;
-            }
-        }
-
-        handleLora(svRecords);
-
-        // to let the idle task run
-        vTaskDelay(10 / portTICK_PERIOD_MS);
-    }
-}
 
 void SDWriteTask(void *parameter)
 {
@@ -234,8 +200,7 @@ void setup()
     Serial.begin(BAUD_RATE);
 
     // set up slave select pins as outputs as the Arduino API
-    pinMode(LORA_CS_PIN, OUTPUT);   // HSPI SS for use by LORA
-    pinMode(SDCARD_CS_PIN, OUTPUT); // VSPI SS for use by SDCARD
+    //pinMode(SDCARD_CS_PIN, OUTPUT); // VSPI SS for use by SDCARD
 
     // set up parachute pin
     pinMode(EJECTION_PIN, OUTPUT);
@@ -250,14 +215,14 @@ void setup()
     // debugln(sizeof(LogData)); //64 bytes
     // debugln(sizeof(GPSReadings));//20 bytes
 
-    // lora_telemetry_queue = xQueueCreate(lora_queue_length, sizeof(SendValues));
+    
     wifi_telemetry_queue = xQueueCreate(wifi_queue_length, sizeof(SendValues));
     sdwrite_queue = xQueueCreate(sd_queue_length, sizeof(LogData));
     gps_queue = xQueueCreate(gps_queue_length, sizeof(GPSReadings));
 
     // initialize core tasks
     // TODO: optimize the stackdepth
-    // xTaskCreatePinnedToCore(LoRaTelemetryTask, "LoRaTelemetryTask", 3000, NULL, 1, &LoRaTelemetryTaskHandle, 0);
+   
     xTaskCreatePinnedToCore(GetDataTask, "GetDataTask", 3000, NULL, 1, &GetDataTaskHandle, 0);
     xTaskCreatePinnedToCore(WiFiTelemetryTask, "WiFiTelemetryTask", 4000, NULL, 1, &WiFiTelemetryTaskHandle, 0);
     xTaskCreatePinnedToCore(readGPSTask, "ReadGPSTask", 3000, NULL, 1, &GPSTaskHandle, 1);

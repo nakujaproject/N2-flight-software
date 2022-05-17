@@ -41,12 +41,12 @@ void callback(char *topic, byte *message, unsigned int length)
     Serial.print("Changing output to ");
     if (messageTemp == "on")
     {
-      Serial.println("on");
+      debugln("on");
       digitalWrite(EJECTION_PIN, HIGH);
     }
     else if (messageTemp == "off")
     {
-      Serial.println("off");
+      debugln("off");
       digitalWrite(EJECTION_PIN, LOW);
     }
   }

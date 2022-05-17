@@ -1,9 +1,12 @@
 #ifndef LOGDATA_H
 #define LOGDATA_H
 
-#include <mySD.h>
-#include <string>
-#include "defs.h"
+// #include <mySD.h>
+// #include <string>
+// #include "defs.h"
+#include "FS.h"
+#include "SD.h"
+#include <SPI.h>
 
 File dataFile;
 
@@ -21,7 +24,7 @@ char *printSDMessage(LogData ld)
 void appendToFile(LogData ld[5])
 {
 
-    dataFile = SD.open("telmetry.txt", FILE_WRITE);
+    dataFile = SD.open("/telmetry.txt", FILE_WRITE);
     if (!dataFile)
     {
         debugln("Failed to open file for appending");

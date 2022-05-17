@@ -22,32 +22,12 @@
 // Timing delays
 #define SETUP_DELAY 5000
 
-// define sd card VSPI
-//2
-const uint8_t SDCARD_CS_PIN = 15;
-//previous 23
-const uint8_t SD_MOSI_PIN = 27;
-const uint8_t SD_MISO_PIN = 19;
-//18
-const uint8_t SD_SCK_PIN = 5;
 
-// const uint8_t SCL_PIN =13;
-// const uint8_t SDA_PIN =12;
-
-
-// lora HSPI
-const uint8_t LORA_CS_PIN = 15;
-const uint8_t LORA_MOSI_PIN = 13;
-const uint8_t LORA_MISO_PIN = 12;
-const uint8_t LORA_SCK_PIN = 14;
-const uint8_t RESET_LORA_PIN = 25;
-const uint8_t IRQ_LORA_PIN = 2;
 
 const uint8_t GPS_TX_PIN = 17;
 const uint8_t GPS_RX_PIN = 16;
 
-// const char *ssid = "appendix";
-// const char *key = "123456789";
+
 const char* ssid = "peps";
 const char* password = "4321dcba";
 
@@ -74,12 +54,7 @@ extern float BASE_ALTITUDE;
 
 static float MAX_ALTITUDE;
 
-// Lora paramters
-const long LORA_FREQ = 868E6; // frequechy 868 MHz
-const int LORA_SF = 7;        // spread factor
-const long LORA_BW = 125E3;   // bandwidth 125 kHz
 
-#define LORA_SYNC_WORD 0xF3
 
 // This struct is used to save all our datapoints.
 // It includes rocket altitude, accelerations in the x, y and z directions
