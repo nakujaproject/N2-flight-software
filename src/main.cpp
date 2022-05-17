@@ -38,9 +38,9 @@ float BASE_ALTITUDE = 0;
 volatile int state = 0;
 
 
-static uint8_t wifi_queue_length = 100;
-static uint8_t sd_queue_length = 150;
-static uint8_t gps_queue_length = 100;
+static uint16_t wifi_queue_length = 100;
+static uint16_t sd_queue_length = 300;
+static uint16_t gps_queue_length = 100;
 
 
 static QueueHandle_t wifi_telemetry_queue;
@@ -48,6 +48,12 @@ static QueueHandle_t sdwrite_queue;
 static QueueHandle_t gps_queue;
 
 
+// callback for done ejection
+void ejectionTimerCallback(TimerHandle_t ejectionTimerHandle)
+{
+    digitalWrite(EJECTION_PIN, LOW);
+    isChuteDeployed = 1;
+}
 
 // Ejection Fires the explosive charge using a relay or a mosfet
 void ejection()
@@ -55,7 +61,9 @@ void ejection()
     if (isChuteDeployed == 0)
     {
         digitalWrite(EJECTION_PIN, HIGH);
-    
+        // TODO: is 3 seconds enough?
+        ejectionTimerHandle = xTimerCreate("EjectionTimer", 3000 / portTICK_PERIOD_MS, pdFALSE, (void *)0, ejectionTimerCallback);
+        xTimerStart(ejectionTimerHandle, portMAX_DELAY);
     }
 }
 
@@ -96,7 +104,7 @@ void GetDataTask(void *parameter)
 
         ld = readData();
         sv = formart_send_data(ld);
-
+       // debugln(ld.timeStamp);
         if (xQueueSend(wifi_telemetry_queue, (void *)&sv, 0) != pdTRUE)
         {
             debugln("Telemetry Queue Full!");
@@ -141,20 +149,22 @@ void WiFiTelemetryTask(void *parameter)
     
         for (int i = 0; i < 5; i++)
         {
-            if (xQueueReceive(wifi_telemetry_queue, (void *)&sv, 10) == pdTRUE)
-            {
+            xQueueReceive(wifi_telemetry_queue, (void *)&sv, 10);
+            
                 svRecords[i] = sv;
                 svRecords[i].latitude = latitude;
                 svRecords[i].longitude = longitude;
-            }
+              // debugln(svRecords[i].timeStamp);
             if (xQueueReceive(gps_queue, (void *)&gpsReadings, 10) == pdTRUE)
             {
                 latitude = gpsReadings.latitude;
                 longitude = gpsReadings.longitude;
             }
+           debugln(svRecords[i].state);
+           
         }
-      
-        handleWiFi(svRecords);
+
+         handleWiFi(svRecords);
 
         // yield to other task such as IDLE task
         vTaskDelay(36 / portTICK_PERIOD_MS);
@@ -187,6 +197,7 @@ void SDWriteTask(void *parameter)
                 latitude = gps.latitude;
                 longitude = gps.longitude;
             }
+            // debugln(ldRecords[i].timeStamp);
         }
         appendToFile(ldRecords);
 

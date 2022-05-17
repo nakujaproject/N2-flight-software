@@ -100,7 +100,7 @@ void sendTelemetryWiFi(SendValues sv[5])
     char alttimestamp[8];
     dtostrf(timestamp, 1, 2, alttimestamp);
     client.publish("esp32/timestamp", alttimestamp);
-    debugln(timestamp);
+    //debugln(timestamp);
 
     // publish state
     state = sv[i].state;

@@ -39,7 +39,7 @@ void appendToFile(LogData ld[5])
         strcat(combinedMessage, message);
         vPortFree(message);
     }
-    debugln(combinedMessage);
+    //debugln(combinedMessage);
 
     if (dataFile.println(combinedMessage))
     {
