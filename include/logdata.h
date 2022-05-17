@@ -24,7 +24,7 @@ char *printSDMessage(LogData ld)
 void appendToFile(LogData ld[5])
 {
 
-    dataFile = SD.open("/telmetry.txt", FILE_WRITE);
+    dataFile = SD.open("/telmetry.txt", FILE_APPEND);
     if (!dataFile)
     {
         debugln("Failed to open file for appending");
@@ -39,7 +39,7 @@ void appendToFile(LogData ld[5])
         strcat(combinedMessage, message);
         vPortFree(message);
     }
-    //debugln(combinedMessage);
+    debugln(combinedMessage);
 
     if (dataFile.println(combinedMessage))
     {

@@ -138,7 +138,7 @@ void WiFiTelemetryTask(void *parameter)
 
     for (;;)
     {
-        // debugf("lora task core %d\n", xPortGetCoreID());
+    
         for (int i = 0; i < 5; i++)
         {
             if (xQueueReceive(wifi_telemetry_queue, (void *)&sv, 10) == pdTRUE)
@@ -153,6 +153,7 @@ void WiFiTelemetryTask(void *parameter)
                 longitude = gpsReadings.longitude;
             }
         }
+      
         handleWiFi(svRecords);
 
         // yield to other task such as IDLE task
@@ -172,7 +173,7 @@ void SDWriteTask(void *parameter)
 
     for (;;)
     {
-        debugf("sd task core %d\n", xPortGetCoreID());
+        // debugf("sd task core %d\n", xPortGetCoreID());
         for (int i = 0; i < 5; i++)
         {
             if (xQueueReceive(sdwrite_queue, (void *)&ld, 10) == pdTRUE)

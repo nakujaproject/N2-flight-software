@@ -100,6 +100,7 @@ void sendTelemetryWiFi(SendValues sv[5])
     char alttimestamp[8];
     dtostrf(timestamp, 1, 2, alttimestamp);
     client.publish("esp32/timestamp", alttimestamp);
+    debugln(timestamp);
 
     // publish state
     state = sv[i].state;
@@ -119,8 +120,8 @@ void sendTelemetryWiFi(SendValues sv[5])
     dtostrf(latitude, 1, 8, altlatitude);
     client.publish("esp32/latitude", altlatitude);
 
-    debugln(latitude);
-    debugln(longitude);
+    // debugln(latitude);
+    // debugln(longitude);
 
   }
 }

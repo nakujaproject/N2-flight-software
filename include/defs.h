@@ -28,8 +28,8 @@ const uint8_t GPS_TX_PIN = 17;
 const uint8_t GPS_RX_PIN = 16;
 
 
-const char* ssid = "peps";
-const char* password = "4321dcba";
+const char* ssid = "unknown-network";
+const char* password = "4321,dcba";
 
 // Add your MQTT Broker IP address, example:
 //const char* mqtt_server = "192.168.1.144";
