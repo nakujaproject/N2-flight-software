@@ -1,0 +1,199 @@
+{
+  "uuid": "0b379d0f65d46c3447d1093de4e55674",
+  "path": "Offline/Nakuja%20Power",
+  "name": "Nakuja Power",
+  "content": "",
+  "created_at": "2022-04-21 12:13:19",
+  "updated_at": "2022-04-29 21:54:30",
+  "stick": "",
+  "documents": [
+    {
+      "uuid": "449ae649135bf624f640b41d3e2f8334",
+      "title": "power",
+      "description": "",
+      "docType": "1",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "4068d5e7e6a8485f9400f02e91ba18ce": 2,
+        "83d59ac3551d4ce1857e08de9312a3f3": 2,
+        "6cd4f59188894c7f9645ee03bb033b93": 2,
+        "24b92167f9cd42ceb7230a0c24a3cf3a": 1,
+        "dc6faadd3ddb46808ff4d75253dd4f2f": 2,
+        "0344dbc764924f8082dfd0e5c83fefb6": 1,
+        "abb94b642b084d14b999208e41911d4b": 1,
+        "85b1b2e8ff4d4ed98bcfc829f4bcb31d": 1,
+        "da524ade4bb94aff8b9517b457d689fa": 2
+      },
+      "BOM": [
+        [
+          "Value",
+          "Quantity",
+          "Package",
+          "Components",
+          "CustomPara"
+        ],
+        [
+          "XT60 Female",
+          1,
+          "XT60-F",
+          "P1",
+          {
+            "BOM_Manufacturer": "Changzhou Amass Elec",
+            "BOM_Manufacturer Part": "XT60-F",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "369fccd7e04e4695bc6cb780e5bddcdf",
+            "uuid": "abb94b642b084d14b999208e41911d4b"
+          }
+        ],
+        [
+          "kf301_2",
+          2,
+          "KF301_2P",
+          "P2,P3",
+          {
+            "BOM_Supplier": "",
+            "BOM_Manufacturer": "BOOMELE",
+            "BOM_Manufacturer Part": "kf301_2",
+            "BOM_Supplier Part": "C33435",
+            "puuid": "3a46618b11b548c8bc85e72f1491cf7a",
+            "uuid": "83d59ac3551d4ce1857e08de9312a3f3"
+          }
+        ],
+        [
+          "Mosfet-N",
+          1,
+          "DC-MOSFET-TO-220",
+          "Q1",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "86c80e8928ff46fb9ee7744e2313a118",
+            "uuid": "24b92167f9cd42ceb7230a0c24a3cf3a"
+          }
+        ],
+        [
+          "1k",
+          2,
+          "R_AXIAL-0.6",
+          "R1,R2",
+          {
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "BOM_Manufacturer Part": "",
+            "puuid": "a1d56870a5c74a15982caa49b487fbb0",
+            "uuid": "6cd4f59188894c7f9645ee03bb033b93"
+          }
+        ],
+        [
+          "Rocker Switch",
+          2,
+          "ROCKER SWITCH TH",
+          "SW1,SW2",
+          {
+            "BOM_Mounted": "Yes",
+            "BOM_Manufacturer Part": "",
+            "puuid": "83dba335e5234a0ea137e116409f1d69",
+            "uuid": "da524ade4bb94aff8b9517b457d689fa"
+          }
+        ],
+        [
+          "XT60 COPY",
+          1,
+          "XT60",
+          "U2",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "d9933b75b3a949a5991cef2b65f4b5bc",
+            "uuid": "0344dbc764924f8082dfd0e5c83fefb6"
+          }
+        ],
+        [
+          "pinheader 2.54 - 8 pins",
+          1,
+          "PINHEADER 2.54 - 8 PINS",
+          "U4",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "4689ceaed4544f5e83ae622ca35a16fb",
+            "uuid": "85b1b2e8ff4d4ed98bcfc829f4bcb31d"
+          }
+        ],
+        [
+          "2 Pins",
+          2,
+          "2 PINS HEADER",
+          "U5,U6",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "8ca24dc1af9647cb96283f8ca6de040b",
+            "uuid": "dc6faadd3ddb46808ff4d75253dd4f2f"
+          }
+        ],
+        [
+          "Pins_header1*3",
+          2,
+          "PINS_HEADER1*3",
+          "U7,U14",
+          {
+            "BOM_Manufacturer": "",
+            "BOM_Manufacturer Part": "",
+            "BOM_Supplier Part": "",
+            "BOM_Supplier": "",
+            "puuid": "87e0df2cdc0a488b86155df4861d23bf",
+            "uuid": "4068d5e7e6a8485f9400f02e91ba18ce"
+          }
+        ]
+      ],
+      "updateTime": 1651257986,
+      "createTime": 1650532399,
+      "histories": [],
+      "created_at": "2022-04-21 12:13:19",
+      "updated_at": "2022-04-29 21:46:26"
+    },
+    {
+      "uuid": "2fed2b7442f3ef32630af65ee2a8a154",
+      "puuid": "0b379d0f65d46c3447d1093de4e55674",
+      "title": "PCB_power",
+      "filename": "PCB_power.json",
+      "description": "",
+      "docType": "3",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "369fccd7e04e4695bc6cb780e5bddcdf": 1,
+        "3a46618b11b548c8bc85e72f1491cf7a": 2,
+        "86c80e8928ff46fb9ee7744e2313a118": 1,
+        "a1d56870a5c74a15982caa49b487fbb0": 2,
+        "d9933b75b3a949a5991cef2b65f4b5bc": 1,
+        "4689ceaed4544f5e83ae622ca35a16fb": 1,
+        "8ca24dc1af9647cb96283f8ca6de040b": 2,
+        "87e0df2cdc0a488b86155df4861d23bf": 2,
+        "83dba335e5234a0ea137e116409f1d69": 2
+      },
+      "BOM": [],
+      "updateTime": 1651258298,
+      "createTime": 1650533754,
+      "histories": [],
+      "created_at": "2022-04-21 12:35:54",
+      "updated_at": "2022-04-29 21:51:38"
+    }
+  ],
+  "sort": [],
+  "title": "Nakuja Power",
+  "foldername": "Nakuja Power",
+  "schfilename": "Nakuja Power.json",
+  "schfilemtime": 1651258402353
+}
