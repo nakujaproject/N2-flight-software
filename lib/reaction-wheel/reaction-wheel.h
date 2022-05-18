@@ -8,7 +8,7 @@
 
 #define sampleTime 10
 
-void TaskRollControl( void *pvParameters );
+void RunReactionWheel(MPU6050 mpu, bool dmpReady);
 void Write_pwm(float);
 double Constrainpwm (double, double, double);
 

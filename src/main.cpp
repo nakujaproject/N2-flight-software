@@ -55,6 +55,8 @@ static QueueHandle_t gps_queue;
 // uninitalised pointers to SPI objects
 SPIClass *hspi = NULL;
 
+void TaskRollControl(void *parameters);
+
 // callback for done ejection
 void ejectionTimerCallback(TimerHandle_t ejectionTimerHandle)
 {
@@ -309,13 +311,18 @@ void setup()
     xTaskCreatePinnedToCore(WiFiTelemetryTask, "WiFiTelemetryTask", 4000, NULL, 1, &WiFiTelemetryTaskHandle, 0);
     xTaskCreatePinnedToCore(readGPSTask, "ReadGPSTask", 3000, NULL, 1, &GPSTaskHandle, 1);
     xTaskCreatePinnedToCore(SDWriteTask, "SDWriteTask", 4000, NULL, 1, &SDWriteTaskHandle, 1);
-
-    reactionWheelParams rollTaskParam = {&mpu, &dmpReady};
-    xTaskCreatePinnedToCore(TaskRollControl, "ReactionWheel", 10000, (void *)&rollTaskParam, 1, &TaskRollControl_Handler, 1);
+    xTaskCreatePinnedToCore(TaskRollControl, "ReactionWheel", 10000, NULL, 1, &TaskRollControl_Handler, 1);
 
     // Delete setup and loop tasks
     vTaskDelete(NULL);
 }
+
 void loop()
 {
+}
+
+void TaskRollControl(void *parameters){
+    for(;;){
+        RunReactionWheel(mpu, dmpDataReady);
+    }
 }
