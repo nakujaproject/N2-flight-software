@@ -61,8 +61,9 @@ struct FilteredValues kalmanUpdate(float altitude, float acceleration)
     struct FilteredValues return_val;
 
     // Measurement matrix
+    // We are subtracting 9.8 which is gravitational acceleration
     BLA::Matrix<2, 1> Z = {altitude,
-                           acceleration};
+                           acceleration - 9.8};
     // Predicted state estimate
     BLA::Matrix<3, 1> x_hat_minus = A * x_hat;
     // Predicted estimate covariance
