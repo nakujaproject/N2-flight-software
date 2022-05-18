@@ -57,7 +57,7 @@ int checkDescent(float altitude)
 int checkGround(float altitude)
 {
   float displacement = altitude - BASE_ALTITUDE;
-  if ((displacement > 20) || (displacement < 20))
+  if (displacement < 20)
   {
     return 4;
   }
@@ -78,26 +78,21 @@ int checkGround(float altitude)
 // The rocket is in state 3 and we are looking out for state 4
 int checkState(float altitude, float velocity, int state)
 {
-  int rval;
   switch (state)
   {
   case 0:
-    rval = checkInflight(altitude);
-    break;
+    return checkInflight(altitude);
   case 1:
-    rval = checkApogee(velocity, altitude);
-    break;
+    return checkApogee(velocity, altitude);
   case 2:
-    rval = checkDescent(altitude);
-    break;
+    return checkDescent(altitude);
   case 3:
-    rval = checkGround(altitude);
-    break;
+    return checkGround(altitude);
+  case 4:
+    return 4;
   default:
-    rval = checkInflight(altitude);
-    break;
+    return checkInflight(altitude);
   }
-  return rval;
 }
 
 #endif
