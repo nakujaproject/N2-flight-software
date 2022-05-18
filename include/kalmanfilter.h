@@ -121,8 +121,4 @@ struct FilteredValues UpdatedkalmanUpdate(float altitude, float acceleration)
     return return_val;
 }
 
-struct FilteredValues ExtendedKalmanUpdate(float altitude, float acceleration)
-{
-    
-}
 #endif
