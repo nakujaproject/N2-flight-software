@@ -50,7 +50,7 @@ BLA::Matrix<3, 3> I = {1, 0, 0,
                        0, 1, 0,
                        0, 0, 1};
 
-BLA::Matrix<3, 1> x_hat = {BASE_ALTITUDE,
+BLA::Matrix<3, 1> x_previous = {BASE_ALTITUDE,
                            0.0,
                            0.0};
 
