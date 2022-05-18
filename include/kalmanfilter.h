@@ -75,13 +75,10 @@ struct FilteredValues kalmanUpdate(float altitude, float acceleration)
     BLA::Matrix<3, 3> p_predicted = ((A * P) * (~A)) + Q;
     
     // UPDATE
-    // Innovation - Prefit - Compare reality against prediction
-    Y = Z - (H * x_predicted);
     // Innovation Covariance - Compare real error against prediction
     BLA::Matrix<2, 2> S = ((H * p_predicted) * (~H)) + R;
     // Kalman gain - Moderate the prediction
     BLA::Matrix<3, 2> K = p_predicted * (~H) * Invert(S);
-
     // Updated state estimate - New estimate of where we are
     x_previous = x_predicted + (K * Y);
     // Covariance Update - New estimate of error
