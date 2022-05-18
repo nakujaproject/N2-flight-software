@@ -1,22 +1,11 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include <Adafruit_BMP085.h>
-#include <Adafruit_MPU6050.h>
-#include <Adafruit_Sensor.h>
-#include <BasicLinearAlgebra.h>
-#include <WiFi.h>
-#include <SD.h>
-#include<CircularBuffer.h>
-#include <HTTPClient.h>
-#include <WiFiUdp.h>
-#include <ESPAsyncWebServer.h>
-#include <FS.h>
-#include <SD.h>
-#include <SPI.h>
+#include "defs.h"
+#include "readsensors.h"
 
-#include "global_variables.h" // header file containing variables
-#include "defs.h" // header file containing constants
+void ejection();
+void ejectionTimerCallback(TimerHandle_t ejectionTimerHandle);
 
 Adafruit_BMP085 barometer; 
 Adafruit_MPU6050 accelerometer;
@@ -252,92 +241,22 @@ void detectApogee(){
   }
 }
 
-void createAccessPoint(){
-  // Connect to Wi-Fi network with SSID and password
-  Serial.print("Setting Ground Station WiFi...");
-  delay(1000);
-
-  // Remove the password parameter, if you want the AP (Access Point) to be open
-  WiFi.softAP(ssid, key);
-
-  IPAddress IP = WiFi.softAPIP();
-  Serial.print("ssid:"); Serial.print(ssid); Serial.println();
-  Serial.print("key:"); Serial.print(key); Serial.println();
-  Serial.print("Rocket IP address: "); Serial.print(IP); Serial.println();
-  
-  server.begin();
-}
-//check state functions start
-int checkPrelaunch(int s){
-  // determines that the rocket is in prelaunch and hasn't taken off
-  if(s==0){
-  return 0;
-  }
-}
-int checkInflight(int s,int t){
-  //detects that the rocket is in flight
-  if(s>5 && t>0 && t<3){
-  return 1;
-  }
-}
-int checkCoasting(int t,int v){
-  //detects that burn out has occured and the rocket is coasting
-  if (t>3 && v>1){
-    return 2;
-  }
-  
-}
-int checkApogee(int v){
-  //detects that apogee has been achieved and ejection of parachute should take place
-  if(v>-1 && v<1){
-    return 3;
-  }
-  
-}
-int checkDescent(int v,int s){
-  //detects descent of the rocket after parachute ejection
-  if(v<-1 && s>5){
-    return 4;
-  }
-  
-}
-int checkGround(int v,int s){
-  //detects landing of the rocket
-  if(v==0 && s==0){
-     return 5; 
-  }
-void serveData(
-    int counter,
-    float altitude,
-    float ax,
-    float ay,
-    float az,
-    float gx,
-    float gy,
-    float gz,
-    float s,
-    float v,
-    float a,
-    int currentState,
-    float longitude,
-    float latitude)
+// get_base_altitude Finds the average of the current altitude from 1000 readings
+float get_base_altitude()
 {
-  Udp.beginPacket({192, 168, 4, 255}, PORT);
-
-  // payload
-
-  Udp.printf("Counter : %d \n Altitude : %.3f \n ax : %.3f \n ay : %.3f \n az  : %.3f \n gx  : %.3f \n gy  : %.3f \n gz  : %.3f \n s : %.3f \n v : %.3f \n a : %.3f \n Current State  : %d \n Longitude  : %.3f \n Latitude  : %.3f \n", counter, altitude, ax, ay, az, gx, gy, gz, s, v, a, currentState, longitude, latitude);
-
-  if (!Udp.endPacket())
+  float altitude = 0;
+  SensorReadings readings;
+  for (int i = 0; i < 10; i++)
   {
-    Serial.println("NOT SENT!");
-  }
-  else
-  {
-    Serial.println("SENT!!");
-  }
-}
-}
-// check state functions end
+    readings = get_readings();
+    debugln(readings.altitude);
+    altitude = altitude + readings.altitude;
 
+    //TODO: why must we delay here?
+  }
+  altitude = altitude / 10.0;
+  debugln(altitude);
+  delay(5000);
+  return altitude;
+}
 #endif

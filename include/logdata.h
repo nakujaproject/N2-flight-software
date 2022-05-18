@@ -1,65 +1,54 @@
 #ifndef LOGDATA_H
 #define LOGDATA_H
 
-#include <BasicLinearAlgebra.h>
+#include <mySD.h>
+#include <string>
+#include "defs.h"
 
-#define LOG_FILE "loggeddata.txt"
+File dataFile;
 
-struct LogData {
-    float counter;
-    float altitude;
-    float ax;
-    float ay;
-    float az;
-    float gx;
-    float gy;
-    float gz;
-    float filtered_s;
-    float filtered_v;
-    float filtered_a;
-    float states;
-    float longitude;
-    float latitude;
-
-}
-void startWriting(){
-    dataFile = SD.open(LOG_FILE, FILE_WRITE);
-    if (dataFile)
-    {
-        Serial.println("Start writing to test2");
-        dataFile.println("Index, Altitude, ax, ay, az, gx, gy, gz, filtered_s, filtered_v, filtered_a, states, longitude, latitude \r\n");
-        dataFile.close();
-    }
-    else
-    {
-        Serial.println("File already exists");
-    }
+char *printSDMessage(LogData ld)
+{
+    // The assigned size is calculated to fit the string
+    char *message = (char *)pvPortMalloc(256);
+    if (!message)
+        return NULL;
+    snprintf(message, 256, "{\"timestamp\":%lld,\"sensor altitude\":%.3f,\"ax\":%.3f,\"ay\":%.3f,\"az\":%.3f,\"gx\":%.3f,\"gy\":%.3f,\"gz\":%.3f,\"filtered s\":%.3f,\"filtered v\":%.3f,\"filtered a\":%.3f,\"state\":%d,\"gps altitude\":%.3f,\"longitude\":%.8f,\"latitude\":%.8f}\n", ld.timeStamp, ld.altitude, ld.ax, ld.ay, ld.az, ld.gx, ld.gy, ld.gz, ld.filtered_s, ld.filtered_v, ld.filtered_a, ld.state, ld.gpsAltitude, ld.longitude, ld.latitude);
+    return message;
 }
 
 // Append data to the SD card (DON'T MODIFY THIS FUNCTION)
-void appendFile(const char *message){
-    dataFile = SD.open(LOG_FILE, FILE_WRITE);
+void appendToFile(LogData ld[5])
+{
+
+    dataFile = SD.open("telmetry.txt", FILE_WRITE);
     if (!dataFile)
     {
-        Serial.println("Failed to open file for appending");
+        debugln("Failed to open file for appending");
         return;
     }
-    if (dataFile.println(message))
+    char combinedMessage[1280];
+    strcpy(combinedMessage, "");
+    for (int i = 0; i < 5; i++)
     {
-       Serial.println("Message appended\n");
+
+        char *message = printSDMessage(ld[i]);
+        strcat(combinedMessage, message);
+        vPortFree(message);
+    }
+    //debugln(combinedMessage);
+
+    if (dataFile.println(combinedMessage))
+    {
+        debugln("Message appended");
     }
     else
     {
-        Serial.println("Append failed");
+        debugln("Append failed");
     }
+
     dataFile.close();
 }
 
-// Write the sensor readings on the SD card
-void logSDCard(LogData ld) {
-    String dataMessage
-    dataMessage = String(ld.counter) + "," + String(ld.altitude) + "," + String(ld.ax) + "," + String(ld.ay) + "," + String(ld.az) + "," + String(ld.gx) + "," + String(ld.gy) + "," + String(ld.gz) + "," + String(ld.filtered_s) + "," + String(ld.filtered_v) + "," + String(ld.filtered_a) + "," + String(ld.states) + "," + String(ld.longitude) + "," + String(ld.latitude) ",";
-    appendFile(dataMessage.c_str());
-}
 
 #endif
