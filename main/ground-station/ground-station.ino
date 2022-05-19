@@ -15,7 +15,7 @@ String header;
 String data;
 
 unsigned long currentMillis;
-unsigned long previousMillis = 0;
+unsigned long previousMillis = 0 ;
 const long interval = 500; 
 
 
