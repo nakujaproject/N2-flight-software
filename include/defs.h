@@ -1,6 +1,7 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+
 #include <WiFiUdp.h>
 #include <WebServer.h>
 
@@ -136,5 +137,19 @@ struct SendValues
     float latitude;
     float longitude;
 };
+
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
+
+bool dmpReady = false;  // set true if DMP init was successful
+
+#define INTERRUPT_PIN 2 
+
+uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
+uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
+uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
+
+extern volatile bool mpuInterrupt = false;     // indicates whether MPU interrupt pin has gone high
+
 
 #endif

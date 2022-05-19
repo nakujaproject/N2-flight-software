@@ -11,6 +11,7 @@
 #include "../include/transmitwifi.h"
 #include "../include/defs.h"
 #include <SPI.h>
+#include <reaction-wheel.h>
 #include <AsyncMqttClient.h>
 
 AsyncMqttClient mqttClient;
@@ -29,6 +30,8 @@ TaskHandle_t WiFiTelemetryTaskHandle;
 TaskHandle_t GetDataTaskHandle;
 
 TaskHandle_t SDWriteTaskHandle;
+
+TaskHandle_t TaskRollControl_Handler;
 
 TaskHandle_t GPSTaskHandle;
 
@@ -51,6 +54,8 @@ static QueueHandle_t gps_queue;
 
 // uninitalised pointers to SPI objects
 SPIClass *hspi = NULL;
+
+void TaskRollControl(void *parameters);
 
 // callback for done ejection
 void ejectionTimerCallback(TimerHandle_t ejectionTimerHandle)
@@ -306,10 +311,18 @@ void setup()
     xTaskCreatePinnedToCore(WiFiTelemetryTask, "WiFiTelemetryTask", 4000, NULL, 1, &WiFiTelemetryTaskHandle, 0);
     xTaskCreatePinnedToCore(readGPSTask, "ReadGPSTask", 3000, NULL, 1, &GPSTaskHandle, 1);
     xTaskCreatePinnedToCore(SDWriteTask, "SDWriteTask", 4000, NULL, 1, &SDWriteTaskHandle, 1);
+    xTaskCreatePinnedToCore(TaskRollControl, "ReactionWheel", 10000, NULL, 1, &TaskRollControl_Handler, 1);
 
     // Delete setup and loop tasks
     vTaskDelete(NULL);
 }
+
 void loop()
 {
+}
+
+void TaskRollControl(void *parameters){
+    for(;;){
+        RunReactionWheel(mpu, dmpDataReady);
+    }
 }
