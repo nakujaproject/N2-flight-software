@@ -9,6 +9,8 @@
 #include "../include/readsensors.h"
 #include "../include/transmitwifi.h"
 #include "../include/defs.h"
+#include "../include/kalmanfilter.h"
+
 
 TimerHandle_t ejectionTimerHandle = NULL;
 

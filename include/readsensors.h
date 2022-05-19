@@ -11,6 +11,7 @@
 #include <SoftwareSerial.h>
 #include <SPI.h>
 #include <WiFi.h>
+#include "transmitwifi.h"
 
 // using uart 2 for serial communication
 SoftwareSerial GPSModule(GPS_RX_PIN, GPS_TX_PIN); // RX, TX
