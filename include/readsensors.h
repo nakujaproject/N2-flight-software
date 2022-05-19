@@ -4,18 +4,13 @@
 #include <FS.h>
 #include <SD.h>
 #include <SPI.h>
-// #include <mySD.h>
 #include <Adafruit_BMP085.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
-#include "logdata.h"
 #include "defs.h"
-#include "transmitwifi.h"
-// #include <TinyGPS++.h>
 #include <SoftwareSerial.h>
 #include <SPI.h>
 #include <WiFi.h>
-
 
 // using uart 2 for serial communication
 SoftwareSerial GPSModule(GPS_RX_PIN, GPS_TX_PIN); // RX, TX
@@ -23,76 +18,71 @@ SoftwareSerial GPSModule(GPS_RX_PIN, GPS_TX_PIN); // RX, TX
 Adafruit_BMP085 bmp;
 Adafruit_MPU6050 mpu;
 
-// void createAccessPoint()
-// {
-//     // Connect to Wi-Fi network with SSID and password
-//     debugln("Creating Rocket Access Point...");
-//     WiFi.mode(WIFI_AP);
-//     WiFi.softAP(ssid, key);
-//     IPAddress IP = WiFi.softAPIP();
-//     debug("ssid:");
-//     debugln(ssid);
-//     debug("key:");
-//     debugln(key);
-//     debug("Rocket IP address: ");
-//     debugln(IP);
-//     Udp.begin(UDP_PORT);
-// }
 void setup_wifi()
 {
-    delay(10);
     // We start by connecting to a WiFi network
-    Serial.println();
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
+    debugln();
+    debug("Connecting to ");
+    debugln(ssid);
 
     WiFi.begin(ssid, password);
 
     while (WiFi.status() != WL_CONNECTED)
     {
         delay(500);
-        Serial.print(".");
+        debug(".");
     }
 
-    Serial.println("");
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
+    debugln("");
+    debugln("WiFi connected");
+    debugln("IP address: ");
+    debugln(WiFi.localIP());
 }
 
-void initSDCard(){
-   if (!SD.begin()) {
-    Serial.println("Card Mount Failed");
-    return;
-  }
-  uint8_t cardType = SD.cardType();
+void initSDCard()
+{
+    if (!SD.begin())
+    {
+        debugln("Card Mount Failed");
+        return;
+    }
+    uint8_t cardType = SD.cardType();
 
-  if(cardType == CARD_NONE){
-    Serial.println("No SD card attached");
-    return;
-  }
-  Serial.print("SD Card Type: ");
-  if(cardType == CARD_MMC){
-    Serial.println("MMC");
-  } else if(cardType == CARD_SD){
-    Serial.println("SDSC");
-  } else if(cardType == CARD_SDHC){
-    Serial.println("SDHC");
-  } else {
-    Serial.println("UNKNOWN");
-  }
-  uint64_t cardSize = SD.cardSize() / (1024 * 1024);
-  Serial.printf("SD Card Size: %lluMB\n", cardSize);
+    if (cardType == CARD_NONE)
+    {
+        debugln("No SD card attached");
+        return;
+    }
+    debug("SD Card Type: ");
+    if (cardType == CARD_MMC)
+    {
+        debugln("MMC");
+    }
+    else if (cardType == CARD_SD)
+    {
+        debugln("SDSC");
+    }
+    else if (cardType == CARD_SDHC)
+    {
+        debugln("SDHC");
+    }
+    else
+    {
+        debugln("UNKNOWN");
+    }
+    uint64_t cardSize = SD.cardSize() / (1024 * 1024);
+    debugf("SD Card Size: %lluMB\n", cardSize);
 }
 
 // function to initialize bmp, mpu, lora module and the sd card module
 void init_components()
 {
-  
-    GPSModule.begin(9600);
+
+    GPSModule.begin(GPS_BAUD_RATE);
     setup_wifi();
-    client.setServer(mqtt_server, 1883);
-    client.setCallback(callback);
+
+    client.setServer(mqtt_server, MQQT_PORT);
+    client.setCallback(mqttCallback);
 
     debugln("BMP180 INITIALIZATION");
     if (!bmp.begin())
@@ -100,15 +90,13 @@ void init_components()
         debugln("Could not find a valid BMP085 sensor, check wiring!");
         while (1)
         {
-            delay(SHORT_DELAY);
+            ;
         }
     }
     else
     {
-        ;
+        debugln("BMP180 FOUND");
     }
-
-    debugln("BMP180 FOUND");
 
     debugln("MPU6050 test!");
     if (!mpu.begin())
@@ -116,38 +104,20 @@ void init_components()
         debugln("Could not find a valid MPU6050 sensor, check wiring!");
         while (1)
         {
-            delay(SHORT_DELAY);
+            ;
         }
     }
     else
     {
-        ;
+        debugln("MPU6050 FOUND");
     }
 
-    debugln("MPU6050 FOUND");
     mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
     mpu.setGyroRange(MPU6050_RANGE_500_DEG);
     mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
 
-   // SD CARD
-   initSDCard();
-//SPI.begin(SD_SCK_PIN,SD_MISO_PIN,SD_MOSI_PIN,SDCARD_CS_PIN);
-//     debugln("SD_CARD INITIALIZATION");
-//     if (!SD.begin(SDCARD_CS_PIN, SD_MOSI_PIN, SD_MISO_PIN, SD_SCK_PIN))
-//     {
-//         debugln("Could not find a valid SD Card, check wiring!");
-//         while (1)
-//         {
-//             delay(SHORT_DELAY);
-//         }
-//     }
-//     else
-//     {
-//         ;
-//     }
-//     debugln("SD CARD FOUND");
-
-    
+    // Initialize SD CARD
+    initSDCard();
 }
 
 String ConvertLat(String nmea[15])

@@ -1,9 +1,6 @@
 #ifndef LOGDATA_H
 #define LOGDATA_H
 
-// #include <mySD.h>
-// #include <string>
-// #include "defs.h"
 #include "FS.h"
 #include "SD.h"
 #include <SPI.h>
@@ -39,7 +36,6 @@ void appendToFile(LogData ld[5])
         strcat(combinedMessage, message);
         vPortFree(message);
     }
-    //debugln(combinedMessage);
 
     if (dataFile.println(combinedMessage))
     {

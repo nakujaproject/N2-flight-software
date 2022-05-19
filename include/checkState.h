@@ -4,18 +4,21 @@
 #include "functions.h"
 #include "defs.h"
 
+// variable for detected apogee height
+float MAX_ALTITUDE = 0;
+
 // This checks that we have starting ascent
 // If we have a positive 20 metres displacement upwards
 int checkInflight(float altitude)
 {
   float displacement = altitude - BASE_ALTITUDE;
-  if (displacement > 20)
+  if (displacement > GROUND_STATE_HEIGHT)
   {
-    return 1;
+    return COASTING_STATE;
   }
   else
   {
-    return 0;
+    return PRE_FLIGHT_GROUND_STATE;
   }
 }
 
@@ -28,11 +31,11 @@ int checkApogee(float velocity, float altitude)
     // Fire ejection charge
     ejection();
     MAX_ALTITUDE = altitude;
-    return 2;
+    return APOGEE_STATE;
   }
   else
   {
-    return 1;
+    return COASTING_STATE;
   }
 }
 
@@ -41,13 +44,13 @@ int checkApogee(float velocity, float altitude)
 int checkDescent(float altitude)
 {
   float displacement = altitude - MAX_ALTITUDE;
-  if (displacement < 20)
+  if (displacement < AFTER_APOGEE_BEFORE_DESCENT_DISPLACEMENT)
   {
-    return 3;
+    return DESCENT_STATE;
   }
   else
   {
-    return 2;
+    return APOGEE_STATE;
   }
 }
 
@@ -57,13 +60,13 @@ int checkDescent(float altitude)
 int checkGround(float altitude)
 {
   float displacement = altitude - BASE_ALTITUDE;
-  if ((displacement > 20) || (displacement < 20))
+  if (displacement < GROUND_STATE_HEIGHT)
   {
-    return 4;
+    return POST_FLIGHT_GROUND_STATE;
   }
   else
   {
-    return 3;
+    return DESCENT_STATE;
   }
 }
 
@@ -78,26 +81,21 @@ int checkGround(float altitude)
 // The rocket is in state 3 and we are looking out for state 4
 int checkState(float altitude, float velocity, int state)
 {
-  int rval;
   switch (state)
   {
-  case 0:
-    rval = checkInflight(altitude);
-    break;
-  case 1:
-    rval = checkApogee(velocity, altitude);
-    break;
-  case 2:
-    rval = checkDescent(altitude);
-    break;
-  case 3:
-    rval = checkGround(altitude);
-    break;
+  case PRE_FLIGHT_GROUND_STATE:
+    return checkInflight(altitude);
+  case COASTING_STATE:
+    return checkApogee(velocity, altitude);
+  case APOGEE_STATE:
+    return checkDescent(altitude);
+  case DESCENT_STATE:
+    return checkGround(altitude);
+  case POST_FLIGHT_GROUND_STATE:
+    return POST_FLIGHT_GROUND_STATE;
   default:
-    rval = checkInflight(altitude);
-    break;
+    return checkInflight(altitude);
   }
-  return rval;
 }
 
 #endif

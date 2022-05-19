@@ -61,22 +61,19 @@ struct SendValues formart_send_data(LogData readings)
   return sv;
 }
 
-// get_base_altitude Finds the average of the current altitude from 1000 readings
+// get_base_altitude Finds the average of the current altitude from 100 readings
 float get_base_altitude()
 {
   float altitude = 0;
   SensorReadings readings;
-  for (int i = 0; i < 10; i++)
+  for (int i = 0; i < 100; i++)
   {
     readings = get_readings();
-    debugln(readings.altitude);
     altitude = altitude + readings.altitude;
 
-    //TODO: why must we delay here?
   }
-  altitude = altitude / 10.0;
-  debugln(altitude);
-  delay(5000);
+  altitude = altitude / 100.0;
+  debugf("Base Altitude is %.3f\n",altitude);
   return altitude;
 }
 #endif
