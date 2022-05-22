@@ -120,8 +120,7 @@ void GetDataTask(void *parameter)
         debugf("Dropped WiFi Packets : %d\n", droppedWiFiPackets);
         debugf("Dropped SD Packets : %d\n", droppedSDPackets);
 
-        droppedWiFiPackets = 0;
-        droppedSDPackets = 0;
+       
 
         // yield to WiFi Telemetry task
         vTaskDelay(74 / portTICK_PERIOD_MS);
@@ -145,7 +144,7 @@ void readGPSTask(void *parameter)
 
         debugf("Dropped GPS Packets : %d\n", droppedGPSPackets);
 
-        droppedGPSPackets = 0;
+        
 
         // yield SD Write task
         //TODO: increase this up to 1000 in steps of 60 to improve queue performance
