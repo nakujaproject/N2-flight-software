@@ -199,7 +199,7 @@ struct GPSReadings get_gps_readings()
     }
     if (GPSModule.find("$GPRMC,"))
     {
-        debug("here");
+
         String tempMsg = GPSModule.readStringUntil('\n');
         for (int i = 0; i < tempMsg.length(); i++)
         {
