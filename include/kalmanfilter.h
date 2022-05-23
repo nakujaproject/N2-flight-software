@@ -45,26 +45,6 @@ BLA::Matrix<3, 1> x_hat = {1500.0,
 BLA::Matrix<2, 1> Y = {0.0,
                        0.0};
 
-<<<<<<< HEAD
-
-struct filter_vals kalmanUpdate(float altitude, float az){
-    struct filter_vals return_val
-    //Measurement matrix
-
-    BLA::Matrix<2, 1> Z = {altitude,
-                           az};
-    //Predicted state estimate
-    BLA::Matrix<3, 1> x_hat_minus = A * x_hat;
-    //Predicted estimate covariance
-    BLA::Matrix<3, 3> P_minus = A * P * (~A) + Q;
-    //Kalman gain
-    BLA::Matrix<3, 2> K = P_minus * (~H) * ((H * P_minus * (~H) + R)).Inverse();
-    //Measurement residual
-    Y = Z - (H * x_hat_minus);
-    //Updated state estimate
-    x_hat = x_hat_minus + K * Y;
-    //Updated estimate covariance
-=======
 // kalmanUpdate This filteres our altitude and acceleration values
 struct FilteredValues kalmanUpdate(float altitude, float acceleration)
 {
@@ -85,21 +65,14 @@ struct FilteredValues kalmanUpdate(float altitude, float acceleration)
     // Updated state estimate
     x_hat = x_hat_minus + K * Y;
     // Updated estimate covariance
->>>>>>> mqtt
     P = (I - K * H) * P_minus;
     Y = Z - (H * x_hat_minus);
 
     return_val.displacement = x_hat(0);
     return_val.velocity = x_hat(1);
     return_val.acceleration = x_hat(2);
-<<<<<<< HEAD
- 
-    return return_val
-    
-=======
 
     return return_val;
->>>>>>> mqtt
 }
 
 #endif
