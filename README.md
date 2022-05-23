@@ -56,4 +56,3 @@ The flight program is structured as a state machine with the following states:
 | 7  | Ground(Flight is over)    |  No more events  |
 
 
-
