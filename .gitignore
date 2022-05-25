@@ -1,0 +1,11 @@
+.pio
+.vscode
+.idea
+cmake-build-debug/
+cmake-build-esp32doit-devkit-v1/
+CMakeLists.txt
+CMakeListsPrivate.txt
+
+
+
+
