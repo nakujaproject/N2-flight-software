@@ -4,18 +4,21 @@
 #include "functions.h"
 #include "defs.h"
 
+// variable for detected apogee height
+float MAX_ALTITUDE = 0;
+
 // This checks that we have starting ascent
 // If we have a positive 20 metres displacement upwards
 int checkInflight(float altitude)
 {
   float displacement = altitude - BASE_ALTITUDE;
-  if (displacement > 20)
+  if (displacement > GROUND_STATE_HEIGHT)
   {
-    return 1;
+    return COASTING_STATE;
   }
   else
   {
-    return 0;
+    return PRE_FLIGHT_GROUND_STATE;
   }
 }
 
@@ -28,11 +31,11 @@ int checkApogee(float velocity, float altitude)
     // Fire ejection charge
     ejection();
     MAX_ALTITUDE = altitude;
-    return 2;
+    return APOGEE_STATE;
   }
   else
   {
-    return 1;
+    return COASTING_STATE;
   }
 }
 
@@ -41,13 +44,13 @@ int checkApogee(float velocity, float altitude)
 int checkDescent(float altitude)
 {
   float displacement = altitude - MAX_ALTITUDE;
-  if (displacement < 20)
+  if (displacement < AFTER_APOGEE_BEFORE_DESCENT_DISPLACEMENT)
   {
-    return 3;
+    return DESCENT_STATE;
   }
   else
   {
-    return 2;
+    return APOGEE_STATE;
   }
 }
 
@@ -57,13 +60,13 @@ int checkDescent(float altitude)
 int checkGround(float altitude)
 {
   float displacement = altitude - BASE_ALTITUDE;
-  if (displacement < 20)
+  if (displacement < GROUND_STATE_HEIGHT)
   {
-    return 4;
+    return POST_FLIGHT_GROUND_STATE;
   }
   else
   {
-    return 3;
+    return DESCENT_STATE;
   }
 }
 
@@ -80,16 +83,16 @@ int checkState(float altitude, float velocity, int state)
 {
   switch (state)
   {
-  case 0:
+  case PRE_FLIGHT_GROUND_STATE:
     return checkInflight(altitude);
-  case 1:
+  case COASTING_STATE:
     return checkApogee(velocity, altitude);
-  case 2:
+  case APOGEE_STATE:
     return checkDescent(altitude);
-  case 3:
+  case DESCENT_STATE:
     return checkGround(altitude);
-  case 4:
-    return 4;
+  case POST_FLIGHT_GROUND_STATE:
+    return POST_FLIGHT_GROUND_STATE;
   default:
     return checkInflight(altitude);
   }

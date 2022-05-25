@@ -1,20 +1,17 @@
 #ifndef READSENSORS_H
 #define READSENSORS_H
 
-// #include <FS.h>
-// #include <SD.h>
-// #include <SPI.h>
-#include <mySD.h>
+#include <FS.h>
+#include <SD.h>
+#include <SPI.h>
 #include <Adafruit_BMP085.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
-#include "logdata.h"
 #include "defs.h"
-#include <TinyGPS++.h>
 #include <SoftwareSerial.h>
 #include <SPI.h>
 #include <WiFi.h>
-#include <LoRa.h>
+#include "transmitwifi.h"
 
 // using uart 2 for serial communication
 SoftwareSerial GPSModule(GPS_RX_PIN, GPS_TX_PIN); // RX, TX
@@ -22,27 +19,71 @@ SoftwareSerial GPSModule(GPS_RX_PIN, GPS_TX_PIN); // RX, TX
 Adafruit_BMP085 bmp;
 Adafruit_MPU6050 mpu;
 
-void createAccessPoint()
+void setup_wifi()
 {
-    // Connect to Wi-Fi network with SSID and password
-    debugln("Creating Rocket Access Point...");
-    WiFi.mode(WIFI_AP);
-    WiFi.softAP(ssid, key);
-    IPAddress IP = WiFi.softAPIP();
-    debug("ssid:");
+    // We start by connecting to a WiFi network
+    debugln();
+    debug("Connecting to ");
     debugln(ssid);
-    debug("key:");
-    debugln(key);
-    debug("Rocket IP address: ");
-    debugln(IP);
-    Udp.begin(UDP_PORT);
+
+    WiFi.begin(ssid, password);
+
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(500);
+        debug(".");
+    }
+
+    debugln("");
+    debugln("WiFi connected");
+    debugln("IP address: ");
+    debugln(WiFi.localIP());
+}
+
+void initSDCard()
+{
+    if (!SD.begin())
+    {
+        debugln("Card Mount Failed");
+        return;
+    }
+    uint8_t cardType = SD.cardType();
+
+    if (cardType == CARD_NONE)
+    {
+        debugln("No SD card attached");
+        return;
+    }
+    debug("SD Card Type: ");
+    if (cardType == CARD_MMC)
+    {
+        debugln("MMC");
+    }
+    else if (cardType == CARD_SD)
+    {
+        debugln("SDSC");
+    }
+    else if (cardType == CARD_SDHC)
+    {
+        debugln("SDHC");
+    }
+    else
+    {
+        debugln("UNKNOWN");
+    }
+    uint64_t cardSize = SD.cardSize() / (1024 * 1024);
+    debugf("SD Card Size: %lluMB\n", cardSize);
 }
 
 // function to initialize bmp, mpu, lora module and the sd card module
-void init_components(SPIClass &spi)
+void init_components()
 {
 
-    GPSModule.begin(9600);
+    GPSModule.begin(GPS_BAUD_RATE);
+    setup_wifi();
+
+    client.setServer(mqtt_server, MQQT_PORT);
+    client.setCallback(mqttCallback);
 
     debugln("BMP180 INITIALIZATION");
     if (!bmp.begin())
@@ -50,15 +91,13 @@ void init_components(SPIClass &spi)
         debugln("Could not find a valid BMP085 sensor, check wiring!");
         while (1)
         {
-            delay(SHORT_DELAY);
+            ;
         }
     }
     else
     {
-        ;
+        debugln("BMP180 FOUND");
     }
-
-    debugln("BMP180 FOUND");
 
     debugln("MPU6050 test!");
     if (!mpu.begin())
@@ -66,57 +105,20 @@ void init_components(SPIClass &spi)
         debugln("Could not find a valid MPU6050 sensor, check wiring!");
         while (1)
         {
-            delay(SHORT_DELAY);
+            ;
         }
     }
     else
     {
-        ;
+        debugln("MPU6050 FOUND");
     }
 
-    debugln("MPU6050 FOUND");
     mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
     mpu.setGyroRange(MPU6050_RANGE_500_DEG);
     mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
 
-    debugln("SD_CARD INITIALIZATION");
-    if (!SD.begin(SDCARD_CS_PIN, SD_MOSI_PIN, SD_MISO_PIN, SD_SCK_PIN))
-    {
-        debugln("Could not find a valid SD Card, check wiring!");
-        while (1)
-        {
-            delay(SHORT_DELAY);
-        }
-    }
-    else
-    {
-        ;
-    }
-    debugln("SD CARD FOUND");
-
-    debugln("LORA INITIALIZATION");
-    debug("Setting up LoRa Sender...");
-
-    LoRa.setPins(LORA_CS_PIN, RESET_LORA_PIN, IRQ_LORA_PIN); // set CS, reset, IRQ pin
-    LoRa.setSPI(spi);
-
-    while (!LoRa.begin(LORA_FREQ))
-    {
-        debug(".");
-    }
-
-    debugln();
-    debugln("Successfully set up LoRa");
-
-    LoRa.setSpreadingFactor(LORA_SF);
-    LoRa.setSignalBandwidth(LORA_BW);
-    LoRa.setSyncWord(LORA_SYNC_WORD);
-    debug("Frequency :");
-    debug(LORA_FREQ);
-    debug("Bandwidth :");
-    debug(LORA_BW);
-    debug("SF :");
-    debugln(LORA_SF);
+    // Initialize SD CARD
+    initSDCard();
 }
 
 String ConvertLat(String nmea[15])

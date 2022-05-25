@@ -1,26 +1,15 @@
 {
-    "cmake.configureOnOpen": false,
     "files.associations": {
-        "*.js": "javascriptreact",
-        "string": "cpp",
-        "array": "cpp",
         "*.tcc": "cpp",
-        "deque": "cpp",
-        "unordered_map": "cpp",
-        "vector": "cpp",
-        "string_view": "cpp",
-        "memory": "cpp",
-        "random": "cpp",
-        "initializer_list": "cpp",
-        "fstream": "cpp",
-        "ostream": "cpp",
-        "kalmanfilter.h": "c",
-        "bitset": "cpp",
         "optional": "cpp",
         "functional": "cpp",
+        "random": "cpp",
+        "fstream": "cpp",
         "istream": "cpp",
+        "ostream": "cpp",
         "sstream": "cpp",
         "streambuf": "cpp",
-        "regex": "cpp"
+        "condition_variable": "c",
+        "mutex": "c"
     }
 }

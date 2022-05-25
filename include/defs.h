@@ -1,8 +1,9 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-#include <WiFiUdp.h>
-#include <WebServer.h>
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <Wire.h>
 
 #define DEBUG 1
 #if DEBUG == 1
@@ -20,59 +21,45 @@
 // Timing delays
 #define SETUP_DELAY 5000
 
-// define sd card VSPI
-const uint8_t SDCARD_CS_PIN = 5;
-const uint8_t SD_MOSI_PIN = 23;
-const uint8_t SD_MISO_PIN = 19;
-const uint8_t SD_SCK_PIN = 18;
-
-// lora HSPI
-const uint8_t LORA_CS_PIN = 15;
-const uint8_t LORA_MOSI_PIN = 13;
-const uint8_t LORA_MISO_PIN = 12;
-const uint8_t LORA_SCK_PIN = 14;
-const uint8_t RESET_LORA_PIN = 25;
-const uint8_t IRQ_LORA_PIN = 2;
-
-const uint8_t GPS_TX_PIN = 17;
-const uint8_t GPS_RX_PIN = 16;
-
-const char *ssid = "appendix";
-const char *key = "123456789";
-
-// Raspberry Pi Mosquitto MQTT Broker
-#define MQTT_HOST IPAddress(192, 168, 4, 2)
-#define MQTT_PORT 1883
-#define MQTT_PUB_TOPIC "onboard/data"
-#define MQTT_USERNAME "user"
-#define MQTT_PASSWORD "password"
-
-WiFiUDP Udp;
-WebServer server(80);
-
-const int UDP_PORT = 4210;
-
 #define SHORT_DELAY 10
 
 #define BAUD_RATE 115200
 
-// Pin to start ignition
+#define GPS_BAUD_RATE 9600
+
+#define SD_CS_PIN 5
+
+// Pin to start ejection charge
 #define EJECTION_PIN 4
 
-extern portMUX_TYPE mutex;
+const uint8_t GPS_TX_PIN = 17;
+const uint8_t GPS_RX_PIN = 16;
 
-extern volatile int state;
+const BaseType_t pro_cpu = 0;
+const BaseType_t app_cpu = 1;
+
+const char *ssid = "unknown-network";
+const char *password = "4321,dcba";
+
+// MQTT Broker IP address
+const char *mqtt_server = "192.168.100.38";
+
+const int MQQT_PORT = 1883;
+
+WiFiClient espClient;
+PubSubClient client(espClient);
 
 extern float BASE_ALTITUDE;
+extern float MAX_ALTITUDE;
 
-static float MAX_ALTITUDE;
+const int PRE_FLIGHT_GROUND_STATE = 0;
+const int COASTING_STATE = 1;
+const int APOGEE_STATE = 2;
+const int DESCENT_STATE = 3;
+const int POST_FLIGHT_GROUND_STATE = 4;
 
-// Lora paramters
-const long LORA_FREQ = 868E6; // frequechy 868 MHz
-const int LORA_SF = 7;        // spread factor
-const long LORA_BW = 125E3;   // bandwidth 125 kHz
-
-#define LORA_SYNC_WORD 0xF3
+const int GROUND_STATE_HEIGHT = 20;
+const int AFTER_APOGEE_BEFORE_DESCENT_DISPLACEMENT = 20;
 
 // This struct is used to save all our datapoints.
 // It includes rocket altitude, accelerations in the x, y and z directions

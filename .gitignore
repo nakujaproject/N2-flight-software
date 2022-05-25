@@ -3,6 +3,7 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+<<<<<<< HEAD
 .idea
 cmake-build-debug/
 cmake-build-esp32doit-devkit-v1/
@@ -12,3 +13,5 @@ CMakeListsPrivate.txt
 
 
 
+=======
+>>>>>>> mqtt
