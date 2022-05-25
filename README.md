@@ -8,19 +8,26 @@ code successfully.
 ***
 
 ```asm
-├───cmake-build-debug
-├───include
-│   └───defs.h
-│   └───functions.h
-│   └───global_variables.h
-│   └───README.md
-├───lib
-├───main
-│   └───ground-station
-          └───ground-station.ino
-├───src
-   └───main.cpp
-└───test
+├── data
+│   └── flightdata.txt
+├── include
+│   ├── checkState.h
+│   ├── defs.h
+│   ├── functions.h
+│   ├── kalmanfilter.h
+│   ├── logdata.h
+│   ├── README
+│   ├── readsensors.h
+│   └── transmitwifi.h
+├── lib
+│   └── README
+├── LICENSE
+├── platformio.ini
+├── README.md
+├── src
+│   └── main.cpp
+└── test
+    └── README
 ```
 
 ### 1. Folders Description
@@ -28,8 +35,7 @@ code successfully.
 |---|---|
 |  include | Contains header files   |
 |  lib | Project libraries|
-|main | Contains the code for ground station micro-controller   |
-|src| Contains main.cpp file the is run by the flight computer   |
+|src| Contains main.cpp source file run by the flight computer   |
 |test| Contains unit test files    |
 
 ### 2. Files Description
@@ -37,8 +43,6 @@ code successfully.
 |---|---|
 | defs.h  | Contains definitions of global constants |
 |functions.h   | Functions declaration and definitions |
-| global_variables,h   | Declarations of al global variables used in the program   |
-| ground-station.ino    | Contains code that runs on the ground station micro-controller   |
 |main.cpp   | Main program uploaded to the avionics computer. It cantains the flight logic in terms of state machines. The corresponding functions are called depending on the current state of the rocket   |
 
 
