@@ -46,13 +46,10 @@ code successfully.
 The flight program is structured as a state machine with the following states:
 | State  | Description  | Waiting for event |
 |---|---| -----|
-| 0  | Pre-launch    |  Launch detect  |
-| 1  | In flight      |  Apogee |
-| 2  | Apogee    |  Pyro output time expiration  |
-| 3  | Post apogee    |  Not used  |
-| 4  | Drogue (Drogue deployed waiting for main parachute)   | main parachute altitude   |
-| 5  | main parachute deployed| Not used  |
-| 6  | Post-main (waiting to land) |  Zero velocity |
-| 7  | Ground(Flight is over)    |  No more events  |
+| 0  | Pre-launch Ground    |  20m displacement above ground  |
+| 1  | Coasting      |  Zero Velocity |
+| 2  | Apogee (Parachute Deployment)    |  20m displacement below apogee  |
+| 3  | Descent|  20m displacement above ground |
+| 4  | Post-flight Ground    |  No more events  |
 
 
