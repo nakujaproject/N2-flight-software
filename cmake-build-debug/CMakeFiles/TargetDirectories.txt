@@ -1,5 +1,0 @@
-C:/Users/USER/Desktop/Folders/Projects/N2-flight-software/cmake-build-debug/CMakeFiles/Production.dir
-C:/Users/USER/Desktop/Folders/Projects/N2-flight-software/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/USER/Desktop/Folders/Projects/N2-flight-software/cmake-build-debug/CMakeFiles/Debug.dir
-C:/Users/USER/Desktop/Folders/Projects/N2-flight-software/cmake-build-debug/CMakeFiles/Z_DUMMY_TARGET.dir
-C:/Users/USER/Desktop/Folders/Projects/N2-flight-software/cmake-build-debug/CMakeFiles/rebuild_cache.dir
