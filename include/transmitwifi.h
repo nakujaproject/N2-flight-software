@@ -5,12 +5,12 @@
 #include "defs.h"
 #include "functions.h"
 
-<<<<<<< HEAD
-char *printTransmitMessageWiFi(SendValues sv)
+void mqttCallback(char *topic, byte *message, unsigned int length)
 {
-  // The assigned size is calculated to fit the string
-  char *message = (char *)pvPortMalloc(100);
-
+  debug("Message arrived on topic: ");
+  debug(topic);
+  debug(". Message: ");
+  String messageTemp;
 
   for (int i = 0; i < length; i++)
   {
@@ -38,6 +38,7 @@ char *printTransmitMessageWiFi(SendValues sv)
     }
   }
 }
+
 
 void reconnect()
 {
@@ -71,7 +72,6 @@ void sendTelemetryWiFi(SendValues sv[5])
   float longitude = 0;
   float latitude = 0;
 
-
   for (int i = 0; i < 5; i++)
   {
     // publish altitude
@@ -85,7 +85,6 @@ void sendTelemetryWiFi(SendValues sv[5])
     char alttimestamp[8];
     dtostrf(timestamp, 1, 2, alttimestamp);
     client.publish("esp32/timestamp", alttimestamp);
-
 
     // publish state
     state = sv[i].state;
@@ -104,7 +103,6 @@ void sendTelemetryWiFi(SendValues sv[5])
     char altlatitude[8];
     dtostrf(latitude, 1, 8, altlatitude);
     client.publish("esp32/latitude", altlatitude);
-
   }
 }
 
@@ -117,8 +115,5 @@ void handleWiFi(SendValues sv[5])
   client.loop();
   sendTelemetryWiFi(sv);
 }
-
-
->>>>>>> mqtt
 
 #endif
