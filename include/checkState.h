@@ -44,12 +44,12 @@ int checkForApogee(float velocity, float currentAltitude, float previousAltitude
   if (currentAltitude < previousAltitude)
   {
 
-    MAX_ALTITUDE = altitude;
+    MAX_ALTITUDE = currentAltitude;
     return BALLISTIC_DESCENT_STATE;
   }
   else if (velocity <= 0)
   {
-    MAX_ALTITUDE = altitude;
+    MAX_ALTITUDE = currentAltitude;
     return BALLISTIC_DESCENT_STATE;
   }
   else
