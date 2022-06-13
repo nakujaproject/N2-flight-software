@@ -28,7 +28,7 @@ float previousAltitude;
 volatile int state = 0;
 
 static uint16_t wifi_queue_length = 100;
-static uint16_t sd_queue_length = 100;
+static uint16_t sd_queue_length = 500;
 static uint16_t gps_queue_length = 100;
 
 static QueueHandle_t wifi_telemetry_queue;
@@ -136,8 +136,9 @@ void readGPSTask(void *parameter)
         debugf("Dropped GPS Packets : %d\n", droppedGPSPackets);
 
         // yield SD Write task
-        // TODO: increase this up to 1000 in steps of 60 to improve queue performance
-        vTaskDelay(60 / portTICK_PERIOD_MS);
+        // TODO: increase this up from 60 to 1000 in steps of 60 to improve queue performance at the expense of GPS
+        //GPS will send 1 reading in 2s when set to 1000
+        vTaskDelay(960 / portTICK_PERIOD_MS);
     }
 }
 

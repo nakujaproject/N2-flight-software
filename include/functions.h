@@ -6,9 +6,6 @@
 
 void ejection();
 void ejectionTimerCallback(TimerHandle_t ejectionTimerHandle);
-LogData formart_send_data(LogData readings);
-LogData formart_SD_data(SensorReadings readings, FilteredValues filtered_values);
-float get_base_altitude();
 
 // formats data that we are going to save to SD card
 // We save all the data points we are collecting

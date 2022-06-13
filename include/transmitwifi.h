@@ -96,36 +96,42 @@ void sendTelemetryWiFi(SendValues sv[5])
   float latitude = 0;
 
   for (int i = 0; i < 5; i++)
-  {
+  { 
+
+    //TODO: publish whole message
+    // char mqttMessage [200];
+    // sprintf(mqttMessage, "{\"timestamp\":%lld,\"altitude\":%.3f,\"state\":%d,\"longitude\":%.8f,\"latitude\":%.8f}", sv[i].timeStamp, sv[i].altitude, sv[i].state, sv[i].longitude, sv[i].latitude);
+    // client.publish("esp32/message", mqttMessage);
+
     // publish altitude
     altitude = sv[i].altitude;
-    char altstring[8];
-    dtostrf(altitude, 1, 2, altstring);
-    client.publish("esp32/altitude", altstring);
+    char mqttAltitude[12];
+    sprintf(mqttAltitude,"%.3f",altitude);
+    client.publish("esp32/altitude", mqttAltitude);
 
     // publish timestamp
     timestamp = sv[i].timeStamp;
-    char alttimestamp[8];
-    dtostrf(timestamp, 1, 2, alttimestamp);
-    client.publish("esp32/timestamp", alttimestamp);
+    char mqttTimestamp[12];
+    sprintf(mqttTimestamp, "%d", timestamp);
+    client.publish("esp32/timestamp", mqttTimestamp);
 
     // publish state
     state = sv[i].state;
-    char altstate[8];
-    dtostrf(state, 1, 2, altstate);
-    client.publish("esp32/state", altstate);
+    char mqttState[3];
+    sprintf(mqttState, "%d", state);
+    client.publish("esp32/state", mqttState);
 
     // publish longitude
     longitude = sv[i].longitude;
-    char altlongitude[8];
-    dtostrf(longitude, 1, 8, altlongitude);
-    client.publish("esp32/longitude", altlongitude);
+    char mqttLongitude[12];
+    sprintf(mqttLongitude, "%.8f",longitude);
+    client.publish("esp32/longitude", mqttLongitude);
 
     // publish latitude
     latitude = sv[i].latitude;
-    char altlatitude[8];
-    dtostrf(latitude, 1, 8, altlatitude);
-    client.publish("esp32/latitude", altlatitude);
+    char mqttLatitude[12];
+    sprintf(mqttLatitude, "%.8f", latitude);
+    client.publish("esp32/latitude", mqttLatitude);
   }
 }
 

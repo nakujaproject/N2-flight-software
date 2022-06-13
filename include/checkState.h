@@ -22,8 +22,8 @@ int checkInPoweredFlight(float altitude)
   }
 }
 
-//This detects fuel burnout
-//if z-acceleration is less than or equals 2m/s^2
+// This detects fuel burnout
+// if z-acceleration is less than or equals 2m/s^2
 int checkForBurnOut(float acceleration)
 {
   if (acceleration <= 2)
@@ -58,7 +58,6 @@ int checkForApogee(float velocity, float currentAltitude, float previousAltitude
   }
 }
 
-
 // Deploys parachute if we moved down 20 metres below apogee
 int deployChute(float altitude)
 {
@@ -91,7 +90,7 @@ int checkGround(float altitude)
   }
 }
 
-// Updates the state-machine state 
+// Updates the state-machine state
 // We check if rocket has launched to move from PRE_FLIGHT_GROUND_STATE to POWERED_FLIGHT_STATE
 // We check if fuel has been burnt completely to move to COASTING_STATE
 // We check if we have reached apogee to move to BALLISTIC_DESCENT_STATE
