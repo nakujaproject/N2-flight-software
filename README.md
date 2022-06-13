@@ -54,7 +54,7 @@ The flight program is structured as a state machine with the following states: a
 | State  | Description  | Waiting for event |
 |---|---| -----|
 | 0  | Pre-Flight Ground    |  20m Above Ground Level  |
-| 1  | Powered Flight      |  accelerationZ <=2m/s^2 for 0.1s |
+| 1  | Powered Flight      |  accelerationZ <=2m/s<sup>2</sup> for 0.1s |
 | 2  | Coasting      |  velecity less than zero to detect apogee|
 | 3  | Ballistic Descent    |  20m displacement below apogee to deploy parachute  |
 | 4  | Chute Descent| < 20m Above Ground|
