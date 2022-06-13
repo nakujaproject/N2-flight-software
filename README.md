@@ -16,7 +16,6 @@ code successfully.
 │   ├── functions.h
 │   ├── kalmanfilter.h
 │   ├── logdata.h
-│   ├── README
 │   ├── readsensors.h
 │   └── transmitwifi.h
 ├── lib
@@ -39,11 +38,15 @@ code successfully.
 |test| Contains unit test files    |
 
 ### 2. Files Description
-|File   | Description   |
-|---|---|
-| defs.h  | Contains definitions of global constants |
-|functions.h   | Functions declaration and definitions |
-|main.cpp   | Main program uploaded to the avionics computer. It cantains the flight logic in terms of state machines. The corresponding functions are called depending on the current state of the rocket   |
+| File | Description |
+| ---------| ----------- |
+|defs.h  | Contains constants declaration |
+|functions.h| Contains general utility functions and prototype function declarations |
+|logdata.h | code for SD card mounting and logging |
+|checkState.h| Contains state machine logic |
+|kalmanfilter.h | Contains kalman filter for accelerometer values |
+|readsensors.h | Contains code for sensors on board including the MPU,BMP,GPS |
+|transmitwifi.h | Contains WiFi set-up and MQTT code |
 
 
 ## Flight Logic 

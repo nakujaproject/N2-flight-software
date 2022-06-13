@@ -2,7 +2,6 @@
 #define READSENSORS_H
 
 #include <FS.h>
-#include <SD.h>
 #include <SPI.h>
 #include <Adafruit_BMP085.h>
 #include <Adafruit_MPU6050.h>
@@ -10,102 +9,28 @@
 #include "defs.h"
 #include <SoftwareSerial.h>
 #include <SPI.h>
-#include <WiFi.h>
-#include "transmitwifi.h"
+
 
 // using uart 2 for serial communication
-SoftwareSerial GPSModule(GPS_RX_PIN, GPS_TX_PIN); // RX, TX
+SoftwareSerial GPSModule(GPS_RX_PIN, GPS_TX_PIN);
 
 Adafruit_BMP085 bmp;
 Adafruit_MPU6050 mpu;
 
-void setup_wifi()
+void init_gps()
 {
-    // We start by connecting to a WiFi network
-    debugln();
-    debug("Connecting to ");
-    debugln(ssid);
-
-    WiFi.begin(ssid, password);
-
-    while (WiFi.status() != WL_CONNECTED)
-    {
-        delay(500);
-        debug(".");
-    }
-
-    debugln("");
-    debugln("WiFi connected");
-    debugln("IP address: ");
-    debugln(WiFi.localIP());
-}
-
-void initSDCard()
-{
-    if (!SD.begin())
-    {
-        debugln("Card Mount Failed");
-        return;
-    }
-    uint8_t cardType = SD.cardType();
-
-    if (cardType == CARD_NONE)
-    {
-        debugln("No SD card attached");
-        return;
-    }
-    debug("SD Card Type: ");
-    if (cardType == CARD_MMC)
-    {
-        debugln("MMC");
-    }
-    else if (cardType == CARD_SD)
-    {
-        debugln("SDSC");
-    }
-    else if (cardType == CARD_SDHC)
-    {
-        debugln("SDHC");
-    }
-    else
-    {
-        debugln("UNKNOWN");
-    }
-    uint64_t cardSize = SD.cardSize() / (1024 * 1024);
-    debugf("SD Card Size: %lluMB\n", cardSize);
-}
-
-// function to initialize bmp, mpu, lora module and the sd card module
-void init_components()
-{
-
     GPSModule.begin(GPS_BAUD_RATE);
-    setup_wifi();
+}
 
-    client.setServer(mqtt_server, MQQT_PORT);
-    client.setCallback(mqttCallback);
-
-    debugln("BMP180 INITIALIZATION");
-    if (!bmp.begin())
-    {
-        debugln("Could not find a valid BMP085 sensor, check wiring!");
-        while (1)
-        {
-            ;
-        }
-    }
-    else
-    {
-        debugln("BMP180 FOUND");
-    }
-
+void init_mpu()
+{
     debugln("MPU6050 test!");
     if (!mpu.begin())
     {
         debugln("Could not find a valid MPU6050 sensor, check wiring!");
         while (1)
         {
-            ;
+            //TODO: add beep to notify 
         }
     }
     else
@@ -116,9 +41,31 @@ void init_components()
     mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
     mpu.setGyroRange(MPU6050_RANGE_500_DEG);
     mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
+}
 
-    // Initialize SD CARD
-    initSDCard();
+void init_bmp()
+{
+    debugln("BMP180 INITIALIZATION");
+    if (!bmp.begin())
+    {
+        debugln("Could not find a valid BMP085 sensor, check wiring!");
+        while (1)
+        {
+            // TODO: add beep to notify
+        }
+    }
+    else
+    {
+        debugln("BMP180 FOUND");
+    }
+}
+
+// function to initialize bmp, mpu, lora module and the sd card module
+void init_sensors()
+{
+    init_gps();
+    init_bmp();
+    init_mpu();
 }
 
 String ConvertLat(String nmea[15])

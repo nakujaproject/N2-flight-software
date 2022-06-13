@@ -39,6 +39,29 @@ void mqttCallback(char *topic, byte *message, unsigned int length)
   }
 }
 
+void setup_wifi()
+{
+  // Connect to a WiFi network
+  debugln();
+  debug("Connecting to ");
+  debugln(ssid);
+
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    debug(".");
+  }
+
+  debugln("");
+  debugln("WiFi connected");
+  debugln("IP address: ");
+  debugln(WiFi.localIP());
+
+  client.setServer(mqtt_server, MQQT_PORT);
+  client.setCallback(mqttCallback);
+}
 
 void reconnect()
 {

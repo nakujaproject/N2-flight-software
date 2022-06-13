@@ -6,33 +6,13 @@
 
 void ejection();
 void ejectionTimerCallback(TimerHandle_t ejectionTimerHandle);
+LogData formart_send_data(LogData readings);
+LogData formart_SD_data(SensorReadings readings, FilteredValues filtered_values);
+float get_base_altitude();
 
-// DummyData returns a dummy data sample for LogData
-// This is helpful for analysis
-struct LogData DummyData()
-{
-  struct LogData ld;
-  ld.timeStamp = 2;
-  ld.altitude = 10.5;
-  ld.ax = 2.56;
-  ld.ay = 2.65;
-  ld.az = 1.02;
-  ld.gx = 5.8;
-  ld.gy = 85.6;
-  ld.gz = 2.6;
-  ld.filtered_s = 3.56;
-  ld.filtered_a = 9.85;
-  ld.filtered_v = 1005.3;
-  ld.state = 5;
-  ld.longitude = 2.4;
-  ld.latitude = 3.2;
-  return ld;
-}
-
-// formart_data This formats data that we are going to save to SD card
-// We pass in our SensorReadings, FilteredValues and GPSReadings
+// formats data that we are going to save to SD card
 // We save all the data points we are collecting
-struct LogData formart_data(SensorReadings readings, FilteredValues filtered_values)
+struct LogData formart_SD_data(SensorReadings readings, FilteredValues filtered_values)
 {
   struct LogData ld = {0};
   ld.altitude = readings.altitude;
@@ -49,7 +29,7 @@ struct LogData formart_data(SensorReadings readings, FilteredValues filtered_val
 }
 
 // formart_send_data This formats data we are going to send over LoRa
-// Currently we are sending altitude, state and timeStamp
+// Currently we are sending altitude, state, timeStamp, longitude and latitude
 struct SendValues formart_send_data(LogData readings)
 {
   struct SendValues sv = {0};
@@ -70,10 +50,9 @@ float get_base_altitude()
   {
     readings = get_readings();
     altitude = altitude + readings.altitude;
-
   }
   altitude = altitude / 100.0;
-  debugf("Base Altitude is %.3f\n",altitude);
+  debugf("Base Altitude is %.3f\n", altitude);
   return altitude;
 }
 #endif

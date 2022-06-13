@@ -63,13 +63,12 @@ struct LogData readData()
     // TODO: very important to know the orientation of the altimeter
     filtered_values = kalmanUpdate(readings.altitude, readings.ay);
 
-    // using mutex since we are modifying a volatile var
-
+    // using mutex to modify state variable
     portENTER_CRITICAL(&mutex);
     state = checkState(filtered_values.displacement, filtered_values.velocity, state);
     portEXIT_CRITICAL(&mutex);
 
-    ld = formart_data(readings, filtered_values);
+    ld = formart_SD_data(readings, filtered_values);
     ld.state = state;
     ld.timeStamp = millis();
 
@@ -209,10 +208,14 @@ void setup()
 
     Serial.begin(BAUD_RATE);
 
-    // set up parachute pin
+    // set up ejection pin
     pinMode(EJECTION_PIN, OUTPUT);
 
-    init_components();
+    setup_wifi();
+
+    init_sensors();
+
+    initSDCard();
 
     // get the base_altitude
     BASE_ALTITUDE = get_base_altitude();
@@ -222,9 +225,6 @@ void setup()
     gps_queue = xQueueCreate(gps_queue_length, sizeof(GPSReadings));
 
     // initialize core tasks
-    // TODO: optimize the stackdepth
-
-    // xTaskCreatePinnedToCore(LoRaTelemetryTask, "LoRaTelemetryTask", 3000, NULL, 1, &LoRaTelemetryTaskHandle, 0);
     xTaskCreatePinnedToCore(GetDataTask, "GetDataTask", 3000, NULL, 1, &GetDataTaskHandle, 0);
     xTaskCreatePinnedToCore(WiFiTelemetryTask, "WiFiTelemetryTask", 4000, NULL, 1, &WiFiTelemetryTaskHandle, 0);
     xTaskCreatePinnedToCore(readGPSTask, "ReadGPSTask", 3000, NULL, 1, &GPSTaskHandle, 1);

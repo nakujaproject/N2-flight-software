@@ -7,6 +7,41 @@
 
 File dataFile;
 
+void initSDCard()
+{
+    if (!SD.begin())
+    {
+        debugln("Card Mount Failed");
+        return;
+    }
+    uint8_t cardType = SD.cardType();
+
+    if (cardType == CARD_NONE)
+    {
+        debugln("No SD card attached");
+        return;
+    }
+    debug("SD Card Type: ");
+    if (cardType == CARD_MMC)
+    {
+        debugln("MMC");
+    }
+    else if (cardType == CARD_SD)
+    {
+        debugln("SDSC");
+    }
+    else if (cardType == CARD_SDHC)
+    {
+        debugln("SDHC");
+    }
+    else
+    {
+        debugln("UNKNOWN");
+    }
+    uint64_t cardSize = SD.cardSize() / (1024 * 1024);
+    debugf("SD Card Size: %lluMB\n", cardSize);
+}
+
 char *printSDMessage(LogData ld)
 {
     // The assigned size is calculated to fit the string
