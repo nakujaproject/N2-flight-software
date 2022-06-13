@@ -5,6 +5,7 @@
 #include "../include/transmitwifi.h"
 #include "../include/defs.h"
 #include "../include/kalmanfilter.h"
+#include <reaction-wheel.h>
 
 TimerHandle_t ejectionTimerHandle = NULL;
 
@@ -17,6 +18,8 @@ TaskHandle_t GetDataTaskHandle;
 TaskHandle_t SDWriteTaskHandle;
 
 TaskHandle_t GPSTaskHandle;
+
+TaskHandle_t TaskRollControl_Handler;
 
 // if 1 chute has been deployed
 uint8_t isChuteDeployed = 0;
@@ -84,6 +87,7 @@ struct LogData readData()
         WiFiTelemetryTask -74ms
         GPS Task - 1000ms
         SD Write Task - 60ms
+        TaskRollControl - unknown
 */
 
 void GetDataTask(void *parameter)
@@ -207,6 +211,14 @@ void SDWriteTask(void *parameter)
     }
 }
 
+void TaskRollControl(void *parameters)
+{
+    for (;;)
+    {
+        RunReactionWheel(mpu, dmpDataReady);
+    }
+}
+
 void setup()
 {
 
@@ -233,6 +245,8 @@ void setup()
     xTaskCreatePinnedToCore(WiFiTelemetryTask, "WiFiTelemetryTask", 4000, NULL, 1, &WiFiTelemetryTaskHandle, 0);
     xTaskCreatePinnedToCore(readGPSTask, "ReadGPSTask", 3000, NULL, 1, &GPSTaskHandle, 1);
     xTaskCreatePinnedToCore(SDWriteTask, "SDWriteTask", 4000, NULL, 1, &SDWriteTaskHandle, 1);
+    
+    xTaskCreatePinnedToCore(TaskRollControl, "ReactionWheel", 10000, NULL, 1, &TaskRollControl_Handler, 1);
 }
 void loop()
 {

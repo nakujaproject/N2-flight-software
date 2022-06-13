@@ -4,18 +4,26 @@
 #include <FS.h>
 #include <SPI.h>
 #include <Adafruit_BMP085.h>
-#include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include "defs.h"
 #include <SoftwareSerial.h>
-#include <SPI.h>
+#include "I2Cdev.h"
+#include "MPU6050_6Axis_MotionApps20.h"
 
+#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
+#include "Wire.h"
+#endif
 
 // using uart 2 for serial communication
 SoftwareSerial GPSModule(GPS_RX_PIN, GPS_TX_PIN);
 
 Adafruit_BMP085 bmp;
-Adafruit_MPU6050 mpu;
+MPU6050 mpu;
+
+void dmpDataReady()
+{
+    mpuInterrupt = true;
+}
 
 void init_gps()
 {
@@ -25,22 +33,63 @@ void init_gps()
 void init_mpu()
 {
     debugln("MPU6050 test!");
-    if (!mpu.begin())
+
+// Initialize MPU6050 accelerometer
+#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
+    Wire.begin(SDA, SCL, 400000);
+#elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
+    Fastwire::setup(400, true);
+#endif
+    mpu.initialize();
+    pinMode(INTERRUPT_PIN, INPUT_PULLUP);
+
+    // load and configure the DMP
+    devStatus = mpu.dmpInitialize();
+
+    // supply your own gyro offsets here, scaled for min sensitivity
+    mpu.setXGyroOffset(220);
+    mpu.setYGyroOffset(76);
+    mpu.setZGyroOffset(-85);
+    mpu.setZAccelOffset(1788);
+
+    if (devStatus == 0)
     {
-        debugln("Could not find a valid MPU6050 sensor, check wiring!");
-        while (1)
-        {
-            //TODO: add beep to notify 
-        }
+        // Calibration Time: generate offsets and calibrate our MPU6050
+        mpu.CalibrateAccel(6);
+        mpu.CalibrateGyro(6);
+        mpu.PrintActiveOffsets();
+        // turn on the DMP, now that it's ready
+        debugln("Enabling DMP");
+        mpu.setDMPEnabled(true);
+
+        // enable Arduino interrupt detection
+        debugln("Enabling interrupt detection (Arduino external interrupt ");
+        attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), dmpDataReady, RISING);
+        mpuIntStatus = mpu.getIntStatus();
+
+        // set our DMP Ready flag so the main loop() function knows it's okay to use it
+        debugln("DMP ready! Waiting for first interrupt");
+        dmpReady = true;
+
+        // get expected DMP packet size for later comparison
+        packetSize = mpu.dmpGetFIFOPacketSize();
     }
     else
     {
-        debugln("MPU6050 FOUND");
+        // ERROR!
+        // 1 = initial memory load failed
+        // 2 = DMP configuration updates failed
+        // (if it's going to break, usually the code will be 1)
+        debug("DMP Initialization failed (code ");
+        debugln(devStatus);
+        debugln("Could not find a valid MPU6050 sensor, check wiring!");
+        while (1)
+        {
+            // TODO: add beep to notify
+        }
     }
 
-    mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
-    mpu.setGyroRange(MPU6050_RANGE_500_DEG);
-    mpu.setFilterBandwidth(MPU6050_BAND_5_HZ);
+    debugln("MPU6050 FOUND");
 }
 
 void init_bmp()
@@ -174,16 +223,17 @@ struct GPSReadings get_gps_readings()
 struct SensorReadings get_readings()
 {
     struct SensorReadings return_val;
-    sensors_event_t a, g, temp;
-    mpu.getEvent(&a, &g, &temp);
-    return_val.altitude = bmp.readAltitude(SEA_LEVEL_PRESSURE);
-    return_val.ax = a.acceleration.x;
-    return_val.ay = a.acceleration.y;
-    return_val.az = a.acceleration.z;
 
-    return_val.gx = g.gyro.x;
-    return_val.gy = g.gyro.y;
-    return_val.gz = g.gyro.z;
+    mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+    return_val.altitude = bmp.readAltitude(SEA_LEVEL_PRESSURE);
+
+    return_val.ax = ax;
+    return_val.ay = ay;
+    return_val.az = az;
+
+    return_val.gx = gx;
+    return_val.gy = gy;
+    return_val.gz = gz;
 
     return return_val;
 }

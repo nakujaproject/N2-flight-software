@@ -32,6 +32,8 @@
 // Pin to start ejection charge
 #define EJECTION_PIN 4
 
+#define INTERRUPT_PIN 2
+
 const uint8_t GPS_TX_PIN = 17;
 const uint8_t GPS_RX_PIN = 16;
 
@@ -61,6 +63,17 @@ const int POST_FLIGHT_GROUND_STATE = 5;
 
 const int GROUND_STATE_DISPLACEMENT = 20;
 const int BELOW_APOGEE_LEVEL_DISPLACEMENT = 20;
+
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
+
+bool dmpReady = false; // set true if DMP init was successful
+
+uint8_t mpuIntStatus; // holds actual interrupt status byte from MPU
+uint8_t devStatus;    // return status after each device operation (0 = success, !0 = error)
+uint16_t packetSize;  // expected DMP packet size (default is 42 bytes)
+
+extern volatile bool mpuInterrupt = false; // indicates whether MPU interrupt pin has gone high
 
 // This struct is used to save all our datapoints.
 // It includes rocket altitude, accelerations in the x, y and z directions
