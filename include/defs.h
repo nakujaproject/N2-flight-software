@@ -53,13 +53,14 @@ extern float BASE_ALTITUDE;
 extern float MAX_ALTITUDE;
 
 const int PRE_FLIGHT_GROUND_STATE = 0;
-const int COASTING_STATE = 1;
-const int APOGEE_STATE = 2;
-const int DESCENT_STATE = 3;
-const int POST_FLIGHT_GROUND_STATE = 4;
+const int POWERED_FLIGHT_STATE = 1;
+const int COASTING_STATE = 2;
+const int BALLISTIC_DESCENT_STATE = 3;
+const int CHUTE_DESCENT_STATE = 4;
+const int POST_FLIGHT_GROUND_STATE = 5;
 
-const int GROUND_STATE_HEIGHT = 20;
-const int AFTER_APOGEE_BEFORE_DESCENT_DISPLACEMENT = 20;
+const int GROUND_STATE_DISPLACEMENT = 20;
+const int BELOW_APOGEE_LEVEL_DISPLACEMENT = 20;
 
 // This struct is used to save all our datapoints.
 // It includes rocket altitude, accelerations in the x, y and z directions

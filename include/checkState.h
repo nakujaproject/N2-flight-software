@@ -7,14 +7,14 @@
 // variable for detected apogee height
 float MAX_ALTITUDE = 0;
 
-// This checks that we have starting ascent
+// This checks that we have started ascent
 // If we have a positive 20 metres displacement upwards
-int checkInflight(float altitude)
+int checkInPoweredFlight(float altitude)
 {
   float displacement = altitude - BASE_ALTITUDE;
-  if (displacement > GROUND_STATE_HEIGHT)
+  if (displacement > GROUND_STATE_DISPLACEMENT)
   {
-    return COASTING_STATE;
+    return POWERED_FLIGHT_STATE;
   }
   else
   {
@@ -22,16 +22,35 @@ int checkInflight(float altitude)
   }
 }
 
-// This checks that we have reached maximum altitude
-// At apogee velocity is zero
-int checkApogee(float velocity, float altitude)
+//This detects fuel burnout
+//if z-acceleration is less than or equals 2m/s^2
+int checkForBurnOut(float acceleration)
 {
-  if (velocity < 0)
+  if (acceleration <= 2)
   {
-    // Fire ejection charge
-    ejection();
+    return COASTING_STATE;
+  }
+  else
+  {
+    return POWERED_FLIGHT_STATE;
+  }
+}
+
+// This checks that we have reached apogee
+// At apogee velocity is zero so we check for velocity less than or equal to zero
+// As redundancy we check if previous altitude is greater than current altitude
+int checkForApogee(float velocity, float currentAltitude, float previousAltitude)
+{
+  if (currentAltitude < previousAltitude)
+  {
+
     MAX_ALTITUDE = altitude;
-    return APOGEE_STATE;
+    return BALLISTIC_DESCENT_STATE;
+  }
+  else if (velocity <= 0)
+  {
+    MAX_ALTITUDE = altitude;
+    return BALLISTIC_DESCENT_STATE;
   }
   else
   {
@@ -39,18 +58,20 @@ int checkApogee(float velocity, float altitude)
   }
 }
 
-// This checks that we are descending from maximum altitude
-// If we have moved down past 20 metres
-int checkDescent(float altitude)
+
+// Deploys parachute if we moved down 20 metres below apogee
+int deployChute(float altitude)
 {
-  float displacement = altitude - MAX_ALTITUDE;
-  if (displacement < AFTER_APOGEE_BEFORE_DESCENT_DISPLACEMENT)
+  float displacement = MAX_ALTITUDE - altitude;
+  if (displacement > BELOW_APOGEE_LEVEL_DISPLACEMENT)
   {
-    return DESCENT_STATE;
+    // Fires ejection charge
+    ejection();
+    return CHUTE_DESCENT_STATE;
   }
   else
   {
-    return APOGEE_STATE;
+    return BALLISTIC_DESCENT_STATE;
   }
 }
 
@@ -60,41 +81,40 @@ int checkDescent(float altitude)
 int checkGround(float altitude)
 {
   float displacement = altitude - BASE_ALTITUDE;
-  if (displacement < GROUND_STATE_HEIGHT)
+  if (displacement < GROUND_STATE_DISPLACEMENT)
   {
     return POST_FLIGHT_GROUND_STATE;
   }
   else
   {
-    return DESCENT_STATE;
+    return CHUTE_DESCENT_STATE;
   }
 }
 
-// checks the current state of the rocket
-// The rocket is in state 0 and we are looking out for state 1
-// We check if we have started flying
-// We check if we have reached apogee
-// The rocket is in state 1 and we are looking out for state 2
-// We check if we are descending
-// The rocket is in state 2 and we are looking out for state 3
-// We check if we have reached the ground
-// The rocket is in state 3 and we are looking out for state 4
-int checkState(float altitude, float velocity, int state)
+// Updates the state-machine state 
+// We check if rocket has launched to move from PRE_FLIGHT_GROUND_STATE to POWERED_FLIGHT_STATE
+// We check if fuel has been burnt completely to move to COASTING_STATE
+// We check if we have reached apogee to move to BALLISTIC_DESCENT_STATE
+// We deploy parachute to move to CHUTE_DESCENT_STATE
+// We check if we have reached the ground to move to POST_FLIGHT_GROUND_STATE
+int checkState(float currentAltitude, float previousAltitude, float velocity, float acceleration, int state)
 {
   switch (state)
   {
   case PRE_FLIGHT_GROUND_STATE:
-    return checkInflight(altitude);
+    return checkInPoweredFlight(currentAltitude);
+  case POWERED_FLIGHT_STATE:
+    return checkForBurnOut(acceleration);
   case COASTING_STATE:
-    return checkApogee(velocity, altitude);
-  case APOGEE_STATE:
-    return checkDescent(altitude);
-  case DESCENT_STATE:
-    return checkGround(altitude);
+    return checkForApogee(velocity, currentAltitude, previousAltitude);
+  case BALLISTIC_DESCENT_STATE:
+    return deployChute(currentAltitude);
+  case CHUTE_DESCENT_STATE:
+    return checkGround(currentAltitude);
   case POST_FLIGHT_GROUND_STATE:
     return POST_FLIGHT_GROUND_STATE;
   default:
-    return checkInflight(altitude);
+    return checkInPoweredFlight(currentAltitude);
   }
 }
 

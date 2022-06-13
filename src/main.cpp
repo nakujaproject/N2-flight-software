@@ -23,6 +23,8 @@ uint8_t isChuteDeployed = 0;
 
 float BASE_ALTITUDE = 0;
 
+float previousAltitude;
+
 volatile int state = 0;
 
 static uint16_t wifi_queue_length = 100;
@@ -63,10 +65,11 @@ struct LogData readData()
     // TODO: very important to know the orientation of the altimeter
     filtered_values = kalmanUpdate(readings.altitude, readings.ay);
 
-    // using mutex to modify state variable
+    // using mutex to modify state 
     portENTER_CRITICAL(&mutex);
-    state = checkState(filtered_values.displacement, filtered_values.velocity, state);
+    state = checkState(filtered_values.displacement, previousAltitude, filtered_values.velocity, filtered_values.acceleration, state);
     portEXIT_CRITICAL(&mutex);
+    previousAltitude = filtered_values.displacement;
 
     ld = formart_SD_data(readings, filtered_values);
     ld.state = state;

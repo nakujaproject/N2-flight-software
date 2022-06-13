@@ -50,13 +50,14 @@ code successfully.
 
 
 ## Flight Logic 
-The flight program is structured as a state machine with the following states:
+The flight program is structured as a state machine with the following states: adopted from BPS space 
 | State  | Description  | Waiting for event |
 |---|---| -----|
-| 0  | Pre-launch Ground    |  20m displacement above ground  |
-| 1  | Coasting      |  Zero Velocity |
-| 2  | Apogee (Parachute Deployment)    |  20m displacement below apogee  |
-| 3  | Descent|  20m displacement above ground |
-| 4  | Post-flight Ground    |  No more events  |
+| 0  | Pre-Flight Ground    |  20m Above Ground Level  |
+| 1  | Powered Flight      |  accelerationZ <=2m/s^2 for 0.1s |
+| 2  | Coasting      |  velecity less than zero to detect apogee|
+| 3  | Ballistic Descent    |  20m displacement below apogee to deploy parachute  |
+| 4  | Chute Descent| < 20m Above Ground|
+| 5  | Post-flight Ground    |  No more events  |
 
 
