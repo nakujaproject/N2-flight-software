@@ -89,49 +89,13 @@ void reconnect()
 
 void sendTelemetryWiFi(SendValues sv[5])
 {
-  float altitude = 0;
-  int timestamp = 0;
-  int state = 0;
-  float longitude = 0;
-  float latitude = 0;
 
   for (int i = 0; i < 5; i++)
-  { 
-
-    //TODO: publish whole message
-    // char mqttMessage [200];
-    // sprintf(mqttMessage, "{\"timestamp\":%lld,\"altitude\":%.3f,\"state\":%d,\"longitude\":%.8f,\"latitude\":%.8f}", sv[i].timeStamp, sv[i].altitude, sv[i].state, sv[i].longitude, sv[i].latitude);
-    // client.publish("esp32/message", mqttMessage);
-
-    // publish altitude
-    altitude = sv[i].altitude;
-    char mqttAltitude[12];
-    sprintf(mqttAltitude,"%.3f",altitude);
-    client.publish("esp32/altitude", mqttAltitude);
-
-    // publish timestamp
-    timestamp = sv[i].timeStamp;
-    char mqttTimestamp[12];
-    sprintf(mqttTimestamp, "%d", timestamp);
-    client.publish("esp32/timestamp", mqttTimestamp);
-
-    // publish state
-    state = sv[i].state;
-    char mqttState[3];
-    sprintf(mqttState, "%d", state);
-    client.publish("esp32/state", mqttState);
-
-    // publish longitude
-    longitude = sv[i].longitude;
-    char mqttLongitude[12];
-    sprintf(mqttLongitude, "%.8f",longitude);
-    client.publish("esp32/longitude", mqttLongitude);
-
-    // publish latitude
-    latitude = sv[i].latitude;
-    char mqttLatitude[12];
-    sprintf(mqttLatitude, "%.8f", latitude);
-    client.publish("esp32/latitude", mqttLatitude);
+  {
+    // publish whole message i json
+    char mqttMessage[200];
+    sprintf(mqttMessage, "{\"timestamp\":%lld,\"altitude\":%.3f,\"state\":%d,\"longitude\":%.8f,\"latitude\":%.8f}", sv[i].timeStamp, sv[i].altitude, sv[i].state, sv[i].longitude, sv[i].latitude);
+    client.publish("esp32/message", mqttMessage);
   }
 }
 
