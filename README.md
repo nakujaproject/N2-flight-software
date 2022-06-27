@@ -1,3 +1,6 @@
+This repository is archived due to merge conflicts resulting from poor branch management. This repository moves to : [N2-AvionicsFlightSoftware](https://github.com/nakujaproject/N2-AvionicsFlightSoftware). The new repository's main branch is identical to this 'old' repository's Launch branch at the time of editing this README.md.
+
+
 # N2-flight-software
 ## Introduction
 This repository contains code used for flight software for Nakuja Rocket N2. The following description provides a detailed
